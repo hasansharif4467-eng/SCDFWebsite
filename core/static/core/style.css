@@ -1,0 +1,880 @@
+
+/* General Settings */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    color: #333333;
+    background-color: #ffffff;
+}
+
+/* Top Contact Bar */
+.top-bar {
+    background-color: #12345a;
+    color: #ffffff;
+    padding: 12px 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+}
+
+/* Header and Navigation */
+header {
+    background-color: #ffffff;
+    padding: 18px 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 25px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.logo h2 {
+    color: #12345a;
+    font-size: 30px;
+    margin-bottom: 5px;
+}
+
+.logo p {
+    color: #666666;
+    font-size: 12px;
+}
+
+/* Navigation Links */
+nav ul {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 22px;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #333333;
+    font-size: 15px;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+nav ul li a:hover {
+    color: #16865c;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .top-bar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    nav ul {
+        gap: 15px;
+    }
+}
+
+/* Hero Section */
+.hero {
+    min-height: 480px;
+    padding: 90px 8%;
+    display: flex;
+    align-items: center;
+    background: linear-gradient(120deg, #12345a, #176b58);
+    color: #ffffff;
+}
+
+.hero-content {
+    max-width: 750px;
+}
+
+.hero-subtitle {
+    color: #a8e6c8;
+    font-size: 14px;
+    font-weight: bold;
+    letter-spacing: 3px;
+    margin-bottom: 18px;
+}
+
+.hero h1 {
+    font-size: 48px;
+    line-height: 1.2;
+    margin-bottom: 22px;
+}
+
+.hero-description {
+    font-size: 17px;
+    line-height: 1.8;
+    color: #f0f4f7;
+    margin-bottom: 30px;
+    max-width: 650px;
+}
+
+.hero-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.btn {
+    display: inline-block;
+    padding: 13px 24px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s ease;
+}
+
+.btn-primary {
+    background-color: #ffffff;
+    color: #12345a;
+}
+
+.btn-secondary {
+    border: 1px solid #ffffff;
+    color: #ffffff;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+}
+
+/* Hero Responsive Design */
+@media (max-width: 768px) {
+    .hero {
+        min-height: 400px;
+        padding: 65px 6%;
+    }
+
+    .hero h1 {
+        font-size: 34px;
+    }
+
+    .hero-description {
+        font-size: 15px;
+    }
+}
+
+/* About SCDF Section */
+.about-section {
+    padding: 85px 8%;
+    background-color: #f7f9fc;
+}
+
+.about-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 55px;
+    align-items: center;
+}
+
+.section-subtitle {
+    color: #16865c;
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    margin-bottom: 15px;
+}
+
+.about-content h2 {
+    color: #12345a;
+    font-size: 34px;
+    line-height: 1.3;
+    margin-bottom: 22px;
+}
+
+.about-content p:not(.section-subtitle) {
+    color: #606873;
+    font-size: 16px;
+    line-height: 1.9;
+    margin-bottom: 18px;
+}
+
+.about-btn {
+    margin-top: 10px;
+    background-color: #16865c;
+    color: #ffffff;
+}
+
+.about-highlight {
+    background-color: #ffffff;
+    padding: 40px 30px;
+    text-align: center;
+    border-radius: 10px;
+    box-shadow: 0 8px 30px rgba(18, 52, 90, 0.10);
+    border-bottom: 4px solid #16865c;
+}
+
+.highlight-icon {
+    font-size: 48px;
+    margin-bottom: 18px;
+}
+
+.about-highlight h3 {
+    color: #12345a;
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+
+.about-highlight p {
+    color: #606873;
+    font-size: 15px;
+    line-height: 1.8;
+}
+
+/* About Responsive Design */
+@media (max-width: 768px) {
+    .about-section {
+        padding: 55px 6%;
+    }
+
+    .about-container {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+
+    .about-content h2 {
+        font-size: 28px;
+    }
+}
+
+/* Programs Section */
+.programs-section {
+    padding: 85px 8%;
+    background-color: #ffffff;
+}
+
+.section-heading {
+    max-width: 700px;
+    margin: 0 auto 45px;
+    text-align: center;
+}
+
+.section-heading h2 {
+    color: #12345a;
+    font-size: 36px;
+    margin-bottom: 15px;
+}
+
+.section-heading > p:last-child {
+    color: #606873;
+    font-size: 16px;
+    line-height: 1.8;
+}
+
+.programs-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 22px;
+}
+
+.program-card {
+    padding: 30px 22px;
+    background-color: #f7f9fc;
+    border-radius: 8px;
+    border-bottom: 3px solid #16865c;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.program-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 10px 25px rgba(18, 52, 90, 0.12);
+}
+
+.program-icon {
+    font-size: 38px;
+    margin-bottom: 20px;
+}
+
+.program-card h3 {
+    color: #12345a;
+    font-size: 21px;
+    margin-bottom: 15px;
+}
+
+.program-card p {
+    color: #606873;
+    font-size: 14px;
+    line-height: 1.8;
+    margin-bottom: 20px;
+}
+
+.program-card a {
+    color: #16865c;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.program-card a:hover {
+    color: #12345a;
+}
+
+/* Programs Responsive Design */
+@media (max-width: 1000px) {
+    .programs-container {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 550px) {
+    .programs-section {
+        padding: 55px 6%;
+    }
+
+    .programs-container {
+        grid-template-columns: 1fr;
+    }
+
+    .section-heading h2 {
+        font-size: 29px;
+    }
+}
+
+/* Projects Section */
+.projects-section {
+    padding: 85px 8%;
+    background-color: #f7f9fc;
+}
+
+.projects-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 25px;
+}
+
+.project-card {
+    background-color: #ffffff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 5px 20px rgba(18, 52, 90, 0.07);
+    transition: transform 0.3s ease;
+}
+
+.project-card:hover {
+    transform: translateY(-5px);
+}
+
+.project-image {
+    min-height: 190px;
+    display: flex;
+    align-items: flex-end;
+    padding: 20px;
+}
+
+.project-image span {
+    display: inline-block;
+    padding: 7px 12px;
+    border-radius: 4px;
+    background-color: #ffffff;
+    color: #12345a;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.project-image-1 {
+    background: linear-gradient(135deg, #b8d8f0, #477ca5);
+}
+
+.project-image-2 {
+    background: linear-gradient(135deg, #b6e0ce, #438c70);
+}
+
+.project-image-3 {
+    background: linear-gradient(135deg, #f2d5a4, #c58a42);
+}
+
+.project-content {
+    padding: 25px;
+}
+
+.project-content h3 {
+    color: #12345a;
+    font-size: 20px;
+    line-height: 1.5;
+    margin-bottom: 12px;
+}
+
+.project-content p {
+    color: #606873;
+    font-size: 14px;
+    line-height: 1.8;
+    margin-bottom: 18px;
+}
+
+.project-content a {
+    color: #16865c;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* Projects Responsive Design */
+@media (max-width: 850px) {
+    .projects-container {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 550px) {
+    .projects-section {
+        padding: 55px 6%;
+    }
+
+    .projects-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+    <!-- Latest News Section -->
+    <section class="news-section" id="news">
+        <div class="section-heading">
+            <p class="section-subtitle">STAY INFORMED</p>
+            <h2>Latest News & Updates</h2>
+            <p>
+                Read about community initiatives, activities and
+                development updates from SCDF.
+            </p>
+        </div>
+
+        <div class="news-container">
+
+            <article class="news-card">
+                <div class="news-image news-image-1">
+                    <span>Education</span>
+                </div>
+                <div class="news-content">
+                    <p class="news-date">SCDF News & Updates</p>
+                    <h3>Supporting Education in Our Communities</h3>
+                    <p>
+                        Learn how educational initiatives can help
+                        create better opportunities for young people.
+                    </p>
+                    <a href="#contact">Read More &rarr;</a>
+                </div>
+            </article>
+
+            <article class="news-card">
+                <div class="news-image news-image-2">
+                    <span>Healthcare</span>
+                </div>
+                <div class="news-content">
+                    <p class="news-date">SCDF News & Updates</p>
+                    <h3>Promoting Community Health Awareness</h3>
+                    <p>
+                        Discover the importance of health awareness
+                        and access to essential information.
+                    </p>
+                    <a href="#contact">Read More &rarr;</a>
+                </div>
+            </article>
+
+            <article class="news-card">
+                <div class="news-image news-image-3">
+                    <span>Development</span>
+                </div>
+                <div class="news-content">
+                    <p class="news-date">SCDF News & Updates</p>
+                    <h3>Building Skills for a Better Future</h3>
+                    <p>
+                        Explore how skills development can support
+                        career opportunities and local communities.
+                    </p>
+                    <a href="#contact">Read More &rarr;</a>
+                </div>
+            </article>
+
+        </div>
+    </section>
+
+/* Training Program Section */
+.training-section {
+    padding: 85px 8%;
+    background-color: #eef5f2;
+}
+
+.training-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    align-items: center;
+    gap: 55px;
+}
+
+.training-content h2 {
+    color: #12345a;
+    font-size: 36px;
+    line-height: 1.3;
+    margin-bottom: 20px;
+}
+
+.training-content > p:not(.section-subtitle) {
+    color: #606873;
+    font-size: 16px;
+    line-height: 1.9;
+    margin-bottom: 22px;
+}
+
+.training-list {
+    list-style: none;
+    margin-bottom: 28px;
+}
+
+.training-list li {
+    color: #354b43;
+    font-size: 15px;
+    margin-bottom: 14px;
+}
+
+.training-btn {
+    background-color: #16865c;
+    color: #ffffff;
+}
+
+.training-highlight {
+    padding: 40px 30px;
+    background-color: #12345a;
+    color: #ffffff;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.training-icon {
+    font-size: 48px;
+    margin-bottom: 20px;
+}
+
+.training-highlight h3 {
+    font-size: 25px;
+    line-height: 1.4;
+    margin-bottom: 15px;
+}
+
+.training-highlight p {
+    color: #e0e8f0;
+    font-size: 15px;
+    line-height: 1.8;
+}
+
+/* Training Responsive Design */
+@media (max-width: 768px) {
+    .training-section {
+        padding: 55px 6%;
+    }
+
+    .training-container {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+
+    .training-content h2 {
+        font-size: 29px;
+    }
+}
+
+/* Career Opportunities Section */
+.career-section {
+    padding: 85px 8%;
+    background-color: #ffffff;
+}
+
+.career-container {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.career-content {
+    text-align: center;
+}
+
+.career-content h2 {
+    color: #12345a;
+    font-size: 36px;
+    line-height: 1.3;
+    margin-bottom: 20px;
+}
+
+.career-content > p:not(.section-subtitle) {
+    max-width: 720px;
+    margin: 0 auto 35px;
+    color: #606873;
+    font-size: 16px;
+    line-height: 1.9;
+}
+
+.career-options {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 25px;
+    margin-bottom: 30px;
+    text-align: left;
+}
+
+.career-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    padding: 25px;
+    background-color: #f7f9fc;
+    border-radius: 8px;
+    border: 1px solid #e5eaf0;
+}
+
+.career-option-icon {
+    font-size: 32px;
+}
+
+.career-option h3 {
+    color: #12345a;
+    font-size: 19px;
+    margin-bottom: 10px;
+}
+
+.career-option p {
+    color: #606873;
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.career-btn {
+    background-color: #16865c;
+    color: #ffffff;
+}
+
+/* Career Responsive Design */
+@media (max-width: 600px) {
+    .career-section {
+        padding: 55px 6%;
+    }
+
+    .career-content h2 {
+        font-size: 29px;
+    }
+
+    .career-options {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Partners Section */
+.partners-section {
+    padding: 75px 8%;
+    background-color: #f7f9fc;
+}
+
+.partners-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.partner-card {
+    min-height: 155px;
+    padding: 25px 15px;
+    background-color: #ffffff;
+    border: 1px solid #e5eaf0;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.partner-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 22px rgba(18, 52, 90, 0.10);
+}
+
+.partner-symbol {
+    font-size: 35px;
+    margin-bottom: 15px;
+}
+
+.partner-card h3 {
+    color: #12345a;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+/* Partners Responsive Design */
+@media (max-width: 850px) {
+    .partners-container {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 500px) {
+    .partners-section {
+        padding: 55px 6%;
+    }
+
+    .partners-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Contact Section */
+.contact-section {
+    padding: 75px 8%;
+    background-color: #eef5f2;
+}
+
+.contact-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 55px;
+    align-items: center;
+}
+
+.contact-intro h2 {
+    color: #12345a;
+    font-size: 35px;
+    margin-bottom: 18px;
+}
+
+.contact-intro > p:last-child {
+    color: #606873;
+    font-size: 15px;
+    line-height: 1.9;
+}
+
+.contact-details {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 18px;
+    background-color: #ffffff;
+    border-radius: 7px;
+}
+
+.contact-item > span {
+    font-size: 28px;
+}
+
+.contact-item h3 {
+    color: #12345a;
+    font-size: 17px;
+    margin-bottom: 6px;
+}
+
+.contact-item p {
+    color: #606873;
+    font-size: 14px;
+}
+
+/* Footer */
+.site-footer {
+    background-color: #102b49;
+    color: #ffffff;
+    padding: 60px 8% 0;
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-bottom: 40px;
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr;
+    gap: 45px;
+}
+
+.footer-about h2 {
+    font-size: 32px;
+    margin-bottom: 10px;
+}
+
+.footer-about p {
+    color: #d0dbe6;
+    font-size: 14px;
+    line-height: 1.8;
+    margin-bottom: 12px;
+}
+
+.footer-links {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 13px;
+}
+
+.footer-links h3 {
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+.footer-links a {
+    color: #d0dbe6;
+    font-size: 14px;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+    color: #8fe0b8;
+}
+
+.footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.18);
+    padding: 22px 0;
+    text-align: center;
+}
+
+.footer-bottom p {
+    color: #d0dbe6;
+    font-size: 13px;
+}
+
+/* Contact and Footer Responsive Design */
+@media (max-width: 768px) {
+    .contact-section {
+        padding: 55px 6%;
+    }
+
+    .contact-container {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+
+    .contact-intro h2 {
+        font-size: 29px;
+    }
+
+    .site-footer {
+        padding: 45px 6% 0;
+    }
+
+    .footer-container {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+}
