@@ -443,66 +443,114 @@ nav ul li a:hover {
     }
 }
 
-    <!-- Latest News Section -->
-    <section class="news-section" id="news">
-        <div class="section-heading">
-            <p class="section-subtitle">STAY INFORMED</p>
-            <h2>Latest News & Updates</h2>
-            <p>
-                Read about community initiatives, activities and
-                development updates from SCDF.
-            </p>
-        </div>
+    
+/* Latest News Section */
+.news-section {
+    padding: 85px 8%;
+    background-color: #ffffff;
+}
 
-        <div class="news-container">
+.news-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 25px;
+}
 
-            <article class="news-card">
-                <div class="news-image news-image-1">
-                    <span>Education</span>
-                </div>
-                <div class="news-content">
-                    <p class="news-date">SCDF News & Updates</p>
-                    <h3>Supporting Education in Our Communities</h3>
-                    <p>
-                        Learn how educational initiatives can help
-                        create better opportunities for young people.
-                    </p>
-                    <a href="#contact">Read More &rarr;</a>
-                </div>
-            </article>
+.news-card {
+    background-color: #f7f9fc;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #e5eaf0;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
 
-            <article class="news-card">
-                <div class="news-image news-image-2">
-                    <span>Healthcare</span>
-                </div>
-                <div class="news-content">
-                    <p class="news-date">SCDF News & Updates</p>
-                    <h3>Promoting Community Health Awareness</h3>
-                    <p>
-                        Discover the importance of health awareness
-                        and access to essential information.
-                    </p>
-                    <a href="#contact">Read More &rarr;</a>
-                </div>
-            </article>
+.news-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 22px rgba(18, 52, 90, 0.10);
+}
 
-            <article class="news-card">
-                <div class="news-image news-image-3">
-                    <span>Development</span>
-                </div>
-                <div class="news-content">
-                    <p class="news-date">SCDF News & Updates</p>
-                    <h3>Building Skills for a Better Future</h3>
-                    <p>
-                        Explore how skills development can support
-                        career opportunities and local communities.
-                    </p>
-                    <a href="#contact">Read More &rarr;</a>
-                </div>
-            </article>
+.news-image {
+    min-height: 160px;
+    display: flex;
+    align-items: flex-end;
+    padding: 20px;
+}
 
-        </div>
-    </section>
+.news-image span {
+    background-color: #ffffff;
+    color: #12345a;
+    padding: 7px 12px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.news-image-1 {
+    background: linear-gradient(135deg, #b8d8f0, #477ca5);
+}
+
+.news-image-2 {
+    background: linear-gradient(135deg, #b6e0ce, #438c70);
+}
+
+.news-image-3 {
+    background: linear-gradient(135deg, #f2d5a4, #c58a42);
+}
+
+.news-content {
+    padding: 25px;
+}
+
+.news-date {
+    color: #16865c;
+    font-size: 12px;
+    margin-bottom: 12px;
+}
+
+.news-content h3 {
+    color: #12345a;
+    font-size: 19px;
+    line-height: 1.5;
+    margin-bottom: 12px;
+}
+
+.news-content > p:not(.news-date) {
+    color: #606873;
+    font-size: 14px;
+    line-height: 1.8;
+    margin-bottom: 18px;
+}
+
+.news-content a {
+    color: #16865c;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.news-content a:hover {
+    color: #12345a;
+}
+
+/* Latest News Responsive Design */
+@media (max-width: 850px) {
+    .news-container {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 550px) {
+    .news-section {
+        padding: 55px 6%;
+    }
+
+    .news-container {
+        grid-template-columns: 1fr;
+    }
+}
+
 
 /* Training Program Section */
 .training-section {
