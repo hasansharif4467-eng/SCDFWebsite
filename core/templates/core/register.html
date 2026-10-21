@@ -1,0 +1,105 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SCDF | Create Account</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f3f6f9; margin: 0; padding: 30px 16px; }
+        .register-box { max-width: 420px; margin: 30px auto; background: white; padding: 28px; border-radius: 12px; box-shadow: 0 4px 18px #00000012; }
+        h1 { color: #12345a; text-align: center; }
+        label { display: block; margin-top: 16px; font-weight: bold; }
+        input { box-sizing: border-box; width: 100%; padding: 11px; margin-top: 7px; border: 1px solid #ccd3dc; border-radius: 6px; }
+        button { width: 100%; margin-top: 22px; padding: 12px; border: 0; border-radius: 6px; background: #16865c; color: white; font-size: 16px; cursor: pointer; }
+        #username-status { display: block; margin-top: 7px; font-size: 14px; }
+        .back-link { display: block; text-align: center; margin-top: 18px; }
+    </style>
+</head>
+<body>
+    <main class="register-box">
+        <h1>Create SCDF Account</h1>
+        {% if registration_error %}
+    <p style="color: #b42318; text-align: center;">
+        {{ registration_error }}
+    </p>
+{% endif %}
+
+{% if form.errors %}
+    <div style="color: #b42318; margin: 12px 0;">
+        {{ form.errors }}
+    </div>
+{% endif %}
+        <form method="post" id="register-form">
+            {% csrf_token %}
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" minlength="3" maxlength="150" autocomplete="username" required>
+            <span id="username-status" aria-live="polite"></span>
+
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" autocomplete="email" required>
+
+            <label for="password1">Password</label>
+            <input type="password" id="password1" name="password1" autocomplete="new-password" required>
+
+            <label for="password2">Confirm password</label>
+            <input type="password" id="password2" name="password2" autocomplete="new-password" required>
+
+            <button type="submit">Create Account</button>
+        </form>
+        <a class="back-link" href="/">Back to SCDF homepage</a>
+    </main>
+
+<script>
+const usernameInput = document.getElementById("username");
+const usernameStatus = document.getElementById("username-status");
+const registerForm = document.getElementById("register-form");
+
+let usernameAvailable = false;
+let checkRequest = 0;
+
+usernameInput.addEventListener("input", async function () {
+    const username = usernameInput.value.trim();
+    const requestId = ++checkRequest;
+
+    usernameAvailable = false;
+    registerForm.querySelector('button[type="submit"]').disabled = true;
+
+    if (username.length < 3) {
+        usernameStatus.textContent = "Enter at least 3 characters.";
+        usernameStatus.style.color = "#b42318";
+        return;
+    }
+
+    usernameStatus.textContent = "Checking username...";
+    usernameStatus.style.color = "#555";
+
+    try {
+        const response = await fetch(
+            `/check-username/?username=${encodeURIComponent(username)}`
+        );
+        const result = await response.json();
+
+        if (requestId !== checkRequest) return;
+
+        usernameAvailable = result.available;
+        usernameStatus.textContent = result.message;
+        usernameStatus.style.color = result.available ? "#16865c" : "#b42318";
+        registerForm.querySelector('button[type="submit"]').disabled = !result.available;
+    } catch (error) {
+        if (requestId !== checkRequest) return;
+        usernameStatus.textContent = "Could not verify username. Try again.";
+        usernameStatus.style.color = "#b42318";
+    }
+});
+
+registerForm.addEventListener("submit", function (event) {
+    if (!usernameAvailable) {
+        event.preventDefault();
+        usernameStatus.textContent = "Please choose an available username first.";
+        usernameStatus.style.color = "#b42318";
+    }
+});
+</script>
+</body>
+</html>
+
