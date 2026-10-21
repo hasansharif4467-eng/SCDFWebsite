@@ -31,7 +31,7 @@
                 <li><a href="#news">News</a></li>
                 <li><a href="#contact">Contact</a></li>
                 {% if user.is_authenticated %}
-                <li><span>Welcome, {{ user.username }}</span></li>
+                <li class="auth-nav"><span>Welcome, {{ user.username }}</span></li>
                 <li>
                     <form method="post" action="{% url 'logout' %}" style="display:inline;">
                         {% csrf_token %}

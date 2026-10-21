@@ -902,3 +902,23 @@ nav ul li a:hover {
         font-size: 21px;
     }
 }
+
+/* Keep authenticated user controls at the right side */
+header nav {
+    flex: 1;
+}
+
+header nav ul {
+    width: 100%;
+}
+
+header nav ul li.auth-nav {
+    margin-left: auto;
+}
+
+@media (max-width: 768px) {
+    header nav {
+        flex: none;
+        width: 100%;
+    }
+}
