@@ -1,4 +1,4 @@
-﻿
+
 /* General Settings */
 * {
     margin: 0;
@@ -920,5 +920,802 @@ header nav ul li.auth-nav {
     header nav {
         flex: none;
         width: 100%;
+    }
+}
+
+/* SCDF Community Discussion - Premium Design */
+.comment-section {
+    --scdf-navy: #102c46;
+    --scdf-green: #16865c;
+    --scdf-mint: #e9f7f0;
+    margin-top: 28px;
+    padding: 24px;
+    background: linear-gradient(145deg, #ffffff, #f3f8fb);
+    border: 1px solid #dce9e7;
+    border-radius: 22px;
+    box-shadow: 0 12px 35px rgba(16, 44, 70, 0.08);
+    position: relative;
+    overflow: hidden;
+}
+
+.comment-section::before {
+    content: "";
+    display: block;
+    height: 4px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(90deg, #102c46, #16865c, #70d6a5);
+}
+
+.comment-section h4 {
+    color: #102c46;
+    font-size: 21px;
+    font-weight: 800;
+    margin: 4px 0 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.comment-section h4::before {
+    content: "";
+    width: 5px;
+    height: 25px;
+    border-radius: 8px;
+    background: #16865c;
+}
+
+.comment-list {
+    display: grid;
+    gap: 14px;
+    margin-bottom: 24px;
+    color: #637487;
+    font-size: 14px;
+}
+
+.comment-item {
+    position: relative;
+    padding: 18px 18px 16px 22px;
+    background: #ffffff;
+    border: 1px solid #e2ecec;
+    border-radius: 16px;
+    box-shadow: 0 4px 14px rgba(16, 44, 70, 0.04);
+    transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.comment-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 9px 22px rgba(16, 44, 70, 0.09);
+}
+
+.comment-item::before {
+    content: "";
+    position: absolute;
+    top: 16px;
+    bottom: 16px;
+    left: 0;
+    width: 4px;
+    border-radius: 0 5px 5px 0;
+    background: #16865c;
+}
+
+.comment-item strong {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #102c46;
+    font-size: 14px;
+    font-weight: 800;
+    overflow-wrap: anywhere;
+}
+
+.comment-item strong::before {
+    content: "✦";
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    flex-shrink: 0;
+    color: #ffffff;
+    background: linear-gradient(135deg, #16865c, #35b883);
+    border-radius: 50%;
+    font-size: 14px;
+}
+
+.comment-item p {
+    margin: 12px 0 10px;
+    color: #34485a;
+    font-size: 14px;
+    line-height: 1.8;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+}
+
+.comment-item small {
+    display: inline-block;
+    padding: 5px 9px;
+    border-radius: 20px;
+    background: #e9f7f0;
+    color: #26734f;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.comment-form {
+    padding: 22px;
+    background: linear-gradient(135deg, #102c46, #173e58);
+    border-radius: 18px;
+    box-shadow: 0 10px 24px rgba(16, 44, 70, 0.14);
+}
+
+.comment-form label {
+    display: block;
+    margin-bottom: 14px;
+    color: #ffffff;
+    font-size: 17px;
+    font-weight: 800;
+}
+
+.comment-form label::after {
+    content: "Your ideas help our community grow.";
+    display: block;
+    margin-top: 6px;
+    color: #c2d8e2;
+    font-size: 12px;
+    font-weight: 400;
+}
+
+.comment-form textarea {
+    display: block;
+    width: 100%;
+    min-height: 115px;
+    margin-top: 16px;
+    padding: 15px 16px;
+    resize: vertical;
+    border: 1px solid #d8e5e9;
+    border-radius: 12px;
+    outline: none;
+    background: #ffffff;
+    color: #243b4d;
+    font: inherit;
+    font-size: 14px;
+    line-height: 1.7;
+    box-sizing: border-box;
+    transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.comment-form textarea:focus {
+    border-color: #55d6a0;
+    box-shadow: 0 0 0 4px rgba(85, 214, 160, 0.18);
+}
+
+.comment-form textarea::placeholder {
+    color: #8998a4;
+}
+
+.comment-form button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    padding: 12px 22px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #16865c, #20a875);
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 5px 14px rgba(22, 134, 92, 0.25);
+    transition: transform 180ms ease, box-shadow 180ms ease, opacity 180ms ease;
+}
+
+.comment-form button::before {
+    content: "➤";
+    font-size: 13px;
+}
+
+.comment-form button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(22, 134, 92, 0.35);
+}
+
+.comment-form button:disabled {
+    cursor: wait;
+    opacity: 0.65;
+    transform: none;
+}
+
+.comment-message {
+    margin: 12px 0 0;
+    color: #baf5d7;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+@media (max-width: 600px) {
+    .comment-section {
+        margin-top: 22px;
+        padding: 17px;
+        border-radius: 17px;
+    }
+
+    .comment-section h4 {
+        font-size: 19px;
+    }
+
+    .comment-item {
+        padding: 15px 13px 14px 17px;
+    }
+
+    .comment-form {
+        padding: 17px;
+        border-radius: 14px;
+    }
+
+    .comment-form button {
+        width: 100%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .comment-item,
+    .comment-form textarea,
+    .comment-form button {
+        transition: none;
+    }
+}
+
+/* =========================================================
+   SCDF COMMUNITY DISCUSSION — REFERENCE DESIGN OVERRIDES
+   Existing HTML, AJAX and database functionality preserved
+   ========================================================= */
+
+.comment-section {
+    --scdf-navy: #0b2e4f;
+    --scdf-green: #10a36a;
+    --scdf-mint: #eaf8f1;
+    margin-top: 30px;
+    padding: 0 22px 22px;
+    overflow: hidden;
+    position: relative;
+    isolation: isolate;
+    background: #f7fafc;
+    border: 1px solid #dce8e9;
+    border-radius: 20px;
+    box-shadow: 0 12px 32px rgba(11, 46, 79, .09);
+}
+
+.comment-section::before {
+    content: "";
+    display: block;
+    height: 5px;
+    margin: 0 -22px 20px;
+    background: linear-gradient(90deg, #0b2e4f 0%, #087b70 55%, #10a36a 100%);
+}
+
+/* Comments heading */
+.comment-section h4 {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0 -22px 20px;
+    padding: 24px 22px;
+    color: #fff;
+    background: linear-gradient(115deg, #0b2e4f 0%, #105b68 65%, #087d65 100%);
+    font-size: 23px;
+    font-weight: 800;
+    line-height: 1.35;
+    letter-spacing: -.4px;
+}
+
+.comment-section h4::before {
+    content: "✳";
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 42px;
+    width: 42px;
+    height: 42px;
+    color: #fff;
+    background: #10a36a;
+    border: 1px solid rgba(255,255,255,.35);
+    border-radius: 50%;
+    font-size: 23px;
+}
+
+.comment-section h4::after {
+    content: "SCDF COMMUNITY";
+    display: block;
+    margin-left: auto;
+    color: #d4f5e5;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.2px;
+}
+
+/* Comment list */
+.comment-list {
+    display: grid;
+    gap: 13px;
+    margin: 0 0 24px;
+    color: #687b8b;
+    font-size: 14px;
+    line-height: 1.65;
+}
+
+.comment-item {
+    position: relative;
+    padding: 17px 18px 16px 20px;
+    background: #eff9f4;
+    border: 1px solid #dcefe5;
+    border-left: 4px solid #10a36a;
+    border-radius: 13px;
+    box-shadow: 0 4px 13px rgba(11,46,79,.04);
+    transition: transform .18s ease, box-shadow .18s ease;
+}
+
+.comment-item:nth-child(even) {
+    background: #f0f6fb;
+    border-color: #dce8f1;
+    border-left-color: #367da5;
+}
+
+.comment-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(11,46,79,.08);
+}
+
+.comment-item strong {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: #0b2e4f;
+    font-size: 14px;
+    font-weight: 800;
+    overflow-wrap: anywhere;
+}
+
+.comment-item strong::before {
+    content: "SC";
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 38px;
+    width: 38px;
+    height: 38px;
+    color: #fff;
+    background: linear-gradient(140deg, #0b2e4f, #10a36a);
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: .4px;
+}
+
+.comment-item p {
+    margin: 13px 0 12px;
+    color: #344b5d;
+    font-size: 14px;
+    line-height: 1.8;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+}
+
+.comment-item small {
+    display: inline-block;
+    padding: 5px 10px;
+    color: #397157;
+    background: rgba(255,255,255,.8);
+    border: 1px solid #d8e9df;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+/* Comment composer */
+.comment-form {
+    display: grid;
+    gap: 12px;
+    padding: 22px;
+    background: linear-gradient(135deg, #0b2e4f, #105b68);
+    border: 1px solid rgba(255,255,255,.15);
+    border-radius: 16px;
+    box-shadow: 0 9px 24px rgba(11,46,79,.12);
+}
+
+.comment-form label {
+    display: block;
+    margin: 0;
+    color: #fff;
+    font-size: 17px;
+    font-weight: 800;
+    line-height: 1.5;
+}
+
+.comment-form label::after {
+    content: "Your thoughts help make our community stronger.";
+    display: block;
+    margin-top: 4px;
+    color: #c9e1e5;
+    font-size: 12px;
+    font-weight: 400;
+}
+
+.comment-form textarea {
+    display: block;
+    width: 100%;
+    min-height: 115px;
+    margin-top: 14px;
+    padding: 14px 16px;
+    resize: vertical;
+    color: #20384a;
+    background: #fff;
+    border: 1px solid #d9e6eb;
+    border-radius: 11px;
+    outline: none;
+    font: inherit;
+    font-size: 14px;
+    line-height: 1.7;
+    box-sizing: border-box;
+    transition: border-color .18s ease, box-shadow .18s ease;
+}
+
+.comment-form textarea:focus {
+    border-color: #10a36a;
+    box-shadow: 0 0 0 4px rgba(16,163,106,.2);
+}
+
+.comment-form textarea::placeholder {
+    color: #8293a0;
+}
+
+.comment-form button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    justify-self: start;
+    min-height: 44px;
+    padding: 12px 22px;
+    color: #fff;
+    background: linear-gradient(135deg, #10a36a, #07865b);
+    border: 0;
+    border-radius: 10px;
+    box-shadow: 0 5px 14px rgba(16,163,106,.24);
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: transform .18s ease, box-shadow .18s ease, opacity .18s ease;
+}
+
+.comment-form button::before {
+    content: "➤";
+    font-size: 13px;
+}
+
+.comment-form button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 19px rgba(16,163,106,.32);
+}
+
+.comment-form button:disabled {
+    cursor: wait;
+    opacity: .65;
+    transform: none;
+}
+
+.comment-message {
+    margin: 0;
+    color: #c8f6dc;
+    font-size: 13px;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+}
+
+/* Logged-out prompt */
+.comment-section > p {
+    margin: 12px 0 0;
+    color: #506578;
+    font-size: 14px;
+}
+
+.comment-section > p a {
+    color: #087b55;
+    font-weight: 800;
+}
+
+/* Responsive layout */
+@media (max-width: 600px) {
+    .comment-section {
+        margin-top: 22px;
+        padding: 0 14px 16px;
+        border-radius: 15px;
+    }
+
+    .comment-section::before {
+        margin-right: -14px;
+        margin-left: -14px;
+    }
+
+    .comment-section h4 {
+        gap: 9px;
+        margin-right: -14px;
+        margin-left: -14px;
+        padding: 18px 14px;
+        font-size: 19px;
+    }
+
+    .comment-section h4::before {
+        flex-basis: 34px;
+        width: 34px;
+        height: 34px;
+        font-size: 19px;
+    }
+
+    .comment-section h4::after {
+        font-size: 8px;
+        letter-spacing: .6px;
+    }
+
+    .comment-item {
+        padding: 14px 12px 13px 15px;
+    }
+
+    .comment-item strong::before {
+        flex-basis: 33px;
+        width: 33px;
+        height: 33px;
+    }
+
+    .comment-form {
+        padding: 16px;
+        border-radius: 13px;
+    }
+
+    .comment-form button {
+        width: 100%;
+        justify-self: stretch;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .comment-item,
+    .comment-form textarea,
+    .comment-form button {
+        transition: none;
+    }
+
+    .comment-item:hover,
+    .comment-form button:hover {
+        transform: none;
+    }
+}
+
+/* SCDF Featured Projects — layout refinement */
+.projects-section .projects-container {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    align-items: start;
+    gap: 28px;
+}
+
+.projects-section .project-card {
+    min-width: 0;
+    border: 1px solid #e2eaf0;
+    border-radius: 16px;
+    box-shadow: 0 8px 26px rgba(11, 46, 79, 0.08);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.projects-section .project-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 32px rgba(11, 46, 79, 0.13);
+}
+
+.projects-section .project-image {
+    min-height: 210px;
+    padding: 0;
+    overflow: hidden;
+    background: linear-gradient(135deg, #dcefe7, #b8d8f0);
+}
+
+.projects-section .project-image img {
+    display: block;
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+}
+
+.projects-section .project-image span {
+    margin: 18px;
+}
+
+.projects-section .project-content {
+    padding: 22px;
+}
+
+.projects-section .project-content h3 {
+    margin-bottom: 10px;
+    font-size: 21px;
+    overflow-wrap: anywhere;
+}
+
+.projects-section .project-content > p {
+    overflow-wrap: anywhere;
+}
+
+.projects-section .comment-section {
+    margin-top: 24px;
+    min-width: 0;
+}
+
+.projects-section .comment-list {
+    min-width: 0;
+}
+
+.projects-section .comment-item {
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 850px) {
+    .projects-section .projects-container {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .projects-section .projects-container {
+        grid-template-columns: 1fr;
+    }
+
+    .projects-section .project-image img {
+        height: 200px;
+    }
+
+    .projects-section .project-content {
+        padding: 17px;
+    }
+}
+/* Expand project card when only one project exists */
+.projects-section .projects-container:has(.project-card:only-child) {
+    grid-template-columns: minmax(0, 1fr);
+}
+
+.projects-section .projects-container:has(.project-card:only-child) .project-card {
+    width: 100%;
+}
+
+/* SCDF Latest News — match Featured Projects design */
+.news-section {
+    padding: 85px 8%;
+    background-color: #f7f9fc;
+}
+
+.news-section .news-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 28px;
+    align-items: start;
+}
+
+.news-section .news-card {
+    min-width: 0;
+    background-color: #ffffff;
+    border: 1px solid #e2eaf0;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 26px rgba(11, 46, 79, 0.08);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.news-section .news-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 32px rgba(11, 46, 79, 0.13);
+}
+
+.news-section .news-image {
+    min-height: 210px;
+    padding: 0;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    background: linear-gradient(135deg, #dcefe7, #b8d8f0);
+}
+
+.news-section .news-image img {
+    display: block;
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+}
+
+.news-section .news-image span {
+    margin: 18px;
+    display: inline-block;
+    padding: 7px 12px;
+    border-radius: 4px;
+    background-color: #ffffff;
+    color: #12345a;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.news-section .news-content {
+    padding: 22px;
+    min-width: 0;
+}
+
+.news-section .news-content h3 {
+    color: #12345a;
+    font-size: 21px;
+    line-height: 1.5;
+    margin-bottom: 10px;
+    overflow-wrap: anywhere;
+}
+
+.news-section .news-content p {
+    color: #606873;
+    font-size: 14px;
+    line-height: 1.8;
+    margin-bottom: 18px;
+    overflow-wrap: anywhere;
+}
+
+.news-section .news-content .news-date {
+    color: #16865c;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.news-section .comment-section {
+    margin-top: 24px;
+    min-width: 0;
+}
+
+.news-section .comment-list {
+    min-width: 0;
+}
+
+.news-section .comment-item {
+    overflow-wrap: anywhere;
+}
+
+.news-section .news-container:has(.news-card:only-child) {
+    grid-template-columns: minmax(0, 1fr);
+}
+
+.news-section .news-container:has(.news-card:only-child) .news-card {
+    width: 100%;
+}
+
+@media (max-width: 850px) {
+    .news-section .news-container {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .news-section {
+        padding: 55px 6%;
+    }
+
+    .news-section .news-container {
+        grid-template-columns: 1fr;
+    }
+
+    .news-section .news-image img {
+        height: 200px;
+    }
+
+    .news-section .news-content {
+        padding: 17px;
     }
 }

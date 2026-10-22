@@ -1,4 +1,5 @@
-﻿from django.urls import path
+﻿
+from django.urls import path
 from django.contrib.auth import views as auth_views
 from . import views
 
@@ -16,4 +17,6 @@ urlpatterns = [
         auth_views.LogoutView.as_view(),
         name="logout",
     ),
+    path("comments/load/", views.load_comments, name="load_comments"),
+    path("comments/add/", views.add_comment, name="add_comment"),
 ]

@@ -1,5 +1,6 @@
+
 from django.contrib import admin
-from .models import Project, News, ContactMessage
+from .models import Project, News, ContactMessage, Comment
 
 
 @admin.register(Project)
@@ -20,5 +21,13 @@ class NewsAdmin(admin.ModelAdmin):
 class ContactMessageAdmin(admin.ModelAdmin):
     list_display = ("name", "email", "phone", "created_at")
     search_fields = ("name", "email", "phone", "message")
+    list_filter = ("created_at",)
+    readonly_fields = ("created_at",)
+
+
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ("author", "news", "project", "created_at")
+    search_fields = ("content", "author__username")
     list_filter = ("created_at",)
     readonly_fields = ("created_at",)
