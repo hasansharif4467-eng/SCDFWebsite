@@ -62,3 +62,82 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"Comment by {self.author.username}"
+
+class Reaction(models.Model):
+    LIKE = "like"
+    DISLIKE = "dislike"
+
+    REACTION_CHOICES = [
+        (LIKE, "Like"),
+        (DISLIKE, "Dislike"),
+    ]
+
+    user = models.ForeignKey(
+        "auth.User",
+        on_delete=models.CASCADE,
+        related_name="scdf_reactions",
+    )
+    news = models.ForeignKey(
+        News,
+        on_delete=models.CASCADE,
+        related_name="reactions",
+        blank=True,
+        null=True,
+    )
+    project = models.ForeignKey(
+        Project,
+        on_delete=models.CASCADE,
+        related_name="reactions",
+        blank=True,
+        null=True,
+    )
+    reaction = models.CharField(
+        max_length=7,
+        choices=REACTION_CHOICES,
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "news"],
+                name="unique_user_news_reaction",
+            ),
+            models.UniqueConstraint(
+                fields=["user", "project"],
+                name="unique_user_project_reaction",
+            ),
+        ]
+
+    def __str__(self):
+        return f"{self.user.username}: {self.reaction}"
+
+class CommentReaction(models.Model):
+    user = models.ForeignKey(
+        "auth.User",
+        on_delete=models.CASCADE,
+        related_name="scdf_comment_reactions",
+    )
+    comment = models.ForeignKey(
+        Comment,
+        on_delete=models.CASCADE,
+        related_name="reactions",
+    )
+    reaction = models.CharField(
+        max_length=7,
+        choices=Reaction.REACTION_CHOICES,
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "comment"],
+                name="unique_user_comment_reaction",
+            ),
+        ]
+
+    def __str__(self):
+        return f"{self.user.username}: {self.reaction} on comment {self.comment_id}"

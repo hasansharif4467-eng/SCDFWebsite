@@ -1,4 +1,4 @@
-﻿
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -193,6 +193,15 @@
                             <p>{{ project.location }}</p>
                         {% endif %}
 
+                        <div class="reaction-section"
+                             data-post-type="project"
+                             data-post-id="{{ project.id }}">
+                            <button type="button" class="reaction-button"
+                                    data-reaction="like">👍 Like <span class="like-count">0</span></button>
+                            <button type="button" class="reaction-button"
+                                    data-reaction="dislike">👎 Dislike <span class="dislike-count">0</span></button>
+                            <p class="reaction-message" role="status"></p>
+                        </div>
                         <div class="comment-section"
                              data-post-type="project"
                              data-post-id="{{ project.id }}">
@@ -274,6 +283,15 @@
                         <h3>{{ news.title }}</h3>
                         <p>{{ news.content }}</p>
 
+                        <div class="reaction-section"
+                             data-post-type="news"
+                             data-post-id="{{ news.id }}">
+                            <button type="button" class="reaction-button"
+                                    data-reaction="like">👍 Like <span class="like-count">0</span></button>
+                            <button type="button" class="reaction-button"
+                                    data-reaction="dislike">👎 Dislike <span class="dislike-count">0</span></button>
+                            <p class="reaction-message" role="status"></p>
+                        </div>
                         <div class="comment-section"
                              data-post-type="news"
                              data-post-id="{{ news.id }}">
@@ -598,7 +616,42 @@ document.addEventListener("DOMContentLoaded", function () {
             const date = document.createElement("small");
             date.textContent = comment.created_at;
 
-            item.append(author, content, date);
+            const reactions = document.createElement("div");
+            reactions.className = "comment-reaction-section";
+            reactions.dataset.commentId = comment.id;
+
+            const likeButton = document.createElement("button");
+            likeButton.type = "button";
+            likeButton.className = "comment-reaction-button";
+            likeButton.dataset.reaction = "like";
+            likeButton.classList.toggle("is-selected", comment.user_reaction === "like");
+            likeButton.setAttribute("aria-pressed", String(comment.user_reaction === "like"));
+            likeButton.textContent = "👍 Like ";
+
+            const likeCount = document.createElement("span");
+            likeCount.className = "comment-like-count";
+            likeCount.textContent = comment.like_count ?? 0;
+            likeButton.appendChild(likeCount);
+
+            const dislikeButton = document.createElement("button");
+            dislikeButton.type = "button";
+            dislikeButton.className = "comment-reaction-button";
+            dislikeButton.dataset.reaction = "dislike";
+            dislikeButton.classList.toggle("is-selected", comment.user_reaction === "dislike");
+            dislikeButton.setAttribute("aria-pressed", String(comment.user_reaction === "dislike"));
+            dislikeButton.textContent = "👎 Dislike ";
+
+            const dislikeCount = document.createElement("span");
+            dislikeCount.className = "comment-dislike-count";
+            dislikeCount.textContent = comment.dislike_count ?? 0;
+            dislikeButton.appendChild(dislikeCount);
+
+            const reactionMessage = document.createElement("small");
+            reactionMessage.className = "comment-reaction-message";
+            reactionMessage.setAttribute("role", "status");
+
+            reactions.append(likeButton, dislikeButton, reactionMessage);
+            item.append(author, content, date, reactions);
             list.appendChild(item);
         });
     }
@@ -675,6 +728,165 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
+
+    // Like / Dislike reactions
+    const reactionSections = document.querySelectorAll(".reaction-section");
+    const reactionSubmitUrl = "{% url 'react_to_post' %}";
+    const reactionLoadUrl = "{% url 'load_reactions' %}";
+    const isAuthenticated = {{ user.is_authenticated|yesno:"true,false" }};
+
+    function updateReactionSection(section, data) {
+        section.querySelector(".like-count").textContent = data.like_count;
+        section.querySelector(".dislike-count").textContent = data.dislike_count;
+
+        section.querySelectorAll(".reaction-button").forEach(function (button) {
+            const selected = button.dataset.reaction === data.user_reaction;
+            button.classList.toggle("is-selected", selected);
+            button.setAttribute("aria-pressed", selected ? "true" : "false");
+        });
+    }
+
+    async function loadReactions(section) {
+        const params = new URLSearchParams({
+            post_type: section.dataset.postType,
+            post_id: section.dataset.postId
+        });
+
+        try {
+            const response = await fetch(reactionLoadUrl + "?" + params.toString(), {
+                headers: { "X-Requested-With": "XMLHttpRequest" }
+            });
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || "Could not load reactions.");
+            }
+
+            updateReactionSection(section, data);
+        } catch (error) {
+            section.querySelector(".reaction-message").textContent =
+                error.message || "Could not load reactions.";
+        }
+    }
+
+    reactionSections.forEach(function (section) {
+        loadReactions(section);
+
+        section.querySelectorAll(".reaction-button").forEach(function (button) {
+            button.addEventListener("click", async function () {
+                const message = section.querySelector(".reaction-message");
+
+                if (!isAuthenticated) {
+                    message.textContent = "Please log in to like or dislike.";
+                    return;
+                }
+
+                section.querySelectorAll(".reaction-button").forEach(function (item) {
+                    item.disabled = true;
+                });
+                message.textContent = "";
+
+                const formData = new FormData();
+                formData.append("post_type", section.dataset.postType);
+                formData.append("post_id", section.dataset.postId);
+                formData.append("reaction", button.dataset.reaction);
+
+                const csrfInput = document.querySelector(
+                    '.comment-form input[name="csrfmiddlewaretoken"]'
+                );
+                if (csrfInput) {
+                    formData.append("csrfmiddlewaretoken", csrfInput.value);
+                }
+
+                try {
+                    const response = await fetch(reactionSubmitUrl, {
+                        method: "POST",
+                        body: formData,
+                        headers: { "X-Requested-With": "XMLHttpRequest" }
+                    });
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(data.error || "Could not save reaction.");
+                    }
+
+                    updateReactionSection(section, data);
+                } catch (error) {
+                    message.textContent =
+                        error.message || "Could not save reaction.";
+                } finally {
+                    section.querySelectorAll(".reaction-button").forEach(function (item) {
+                        item.disabled = false;
+                    });
+                }
+            });
+        });
+    });
+
+    // Like / Dislike reactions for individual comments
+    document.addEventListener("click", async function (event) {
+        const button = event.target.closest(".comment-reaction-button");
+        if (!button) return;
+
+        const section = button.closest(".comment-reaction-section");
+        if (!section) return;
+
+        const message = section.querySelector(".comment-reaction-message");
+
+        if (!isAuthenticated) {
+            message.textContent = "Please log in to like or dislike.";
+            return;
+        }
+
+        const buttons = section.querySelectorAll(".comment-reaction-button");
+        buttons.forEach(function (item) {
+            item.disabled = true;
+        });
+        message.textContent = "";
+
+        const formData = new FormData();
+        formData.append("comment_id", section.dataset.commentId);
+        formData.append("reaction", button.dataset.reaction);
+
+        const csrfInput = document.querySelector(
+            '.comment-form input[name="csrfmiddlewaretoken"]'
+        );
+        if (csrfInput) {
+            formData.append("csrfmiddlewaretoken", csrfInput.value);
+        }
+
+        try {
+            const response = await fetch("{% url 'react_to_comment' %}", {
+                method: "POST",
+                body: formData,
+                headers: { "X-Requested-With": "XMLHttpRequest" }
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || "Could not save comment reaction.");
+            }
+
+            section.querySelector(".comment-like-count").textContent =
+                data.like_count;
+            section.querySelector(".comment-dislike-count").textContent =
+                data.dislike_count;
+
+            buttons.forEach(function (item) {
+                const selected = item.dataset.reaction === data.user_reaction;
+                item.classList.toggle("is-selected", selected);
+                item.setAttribute("aria-pressed", String(selected));
+            });
+        } catch (error) {
+            message.textContent =
+                error.message || "Could not save comment reaction.";
+        } finally {
+            buttons.forEach(function (item) {
+                item.disabled = false;
+            });
+        }
+    });
 </script>
 </body>
 </html>

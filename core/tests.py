@@ -3,7 +3,7 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from django.urls import reverse
 
-from .models import ContactMessage
+from .models import ContactMessage, News, Project, Comment, Reaction
 
 
 class HomeViewTests(TestCase):
@@ -271,3 +271,92 @@ class LoginLogoutSessionTests(TestCase):
         self.assertIsNone(
             self.client.session.get("_auth_user_id")
         )
+
+class ReactionViewTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username="reaction_tester",
+            password="TestPass123!",
+        )
+        self.news = News.objects.create(
+            title="Reaction Test News",
+            content="Testing reactions.",
+        )
+        self.project = Project.objects.create(
+            title="Reaction Test Project",
+            description="Testing project reactions.",
+        )
+
+    def test_anonymous_user_cannot_react(self):
+        response = self.client.post(
+            reverse("react_to_post"),
+            {
+                "post_type": "news",
+                "post_id": self.news.pk,
+                "reaction": "like",
+            },
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(Reaction.objects.count(), 0)
+
+    def test_user_can_like_news(self):
+        self.client.force_login(self.user)
+        response = self.client.post(
+            reverse("react_to_post"),
+            {
+                "post_type": "news",
+                "post_id": self.news.pk,
+                "reaction": "like",
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["like_count"], 1)
+        self.assertEqual(response.json()["dislike_count"], 0)
+        self.assertEqual(response.json()["user_reaction"], "like")
+
+    def test_user_can_change_like_to_dislike(self):
+        self.client.force_login(self.user)
+        url = reverse("react_to_post")
+        payload = {
+            "post_type": "news",
+            "post_id": self.news.pk,
+            "reaction": "like",
+        }
+        self.client.post(url, payload)
+        payload["reaction"] = "dislike"
+        response = self.client.post(url, payload)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["like_count"], 0)
+        self.assertEqual(response.json()["dislike_count"], 1)
+        self.assertEqual(response.json()["user_reaction"], "dislike")
+        self.assertEqual(Reaction.objects.count(), 1)
+
+    def test_repeating_same_reaction_removes_it(self):
+        self.client.force_login(self.user)
+        url = reverse("react_to_post")
+        payload = {
+            "post_type": "project",
+            "post_id": self.project.pk,
+            "reaction": "like",
+        }
+        self.client.post(url, payload)
+        response = self.client.post(url, payload)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["like_count"], 0)
+        self.assertIsNone(response.json()["user_reaction"])
+        self.assertEqual(Reaction.objects.count(), 0)
+
+    def test_invalid_reaction_is_rejected(self):
+        self.client.force_login(self.user)
+        response = self.client.post(
+            reverse("react_to_post"),
+            {
+                "post_type": "news",
+                "post_id": self.news.pk,
+                "reaction": "love",
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(Reaction.objects.count(), 0)

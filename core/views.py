@@ -1,4 +1,4 @@
-﻿
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
@@ -12,7 +12,7 @@ from django.core.exceptions import ValidationError
 from django.db.models import Q
 import re
 
-from .models import Project, News, ContactMessage, Comment
+from .models import Project, News, ContactMessage, Comment, Reaction, CommentReaction
 
 
 def home(request):
@@ -131,12 +131,23 @@ def _get_post_for_comment(request):
     return None, None
 
 
-def _comment_data(comment):
+def _comment_data(comment, user=None):
+    reactions = CommentReaction.objects.filter(comment=comment)
+    user_reaction = None
+
+    if user is not None and user.is_authenticated:
+        user_reaction = reactions.filter(user=user).values_list(
+            "reaction", flat=True
+        ).first()
+
     return {
         "id": comment.pk,
         "author": comment.author.username,
         "content": comment.content,
         "created_at": comment.created_at.strftime("%Y-%m-%d %H:%M"),
+        "like_count": reactions.filter(reaction=Reaction.LIKE).count(),
+        "dislike_count": reactions.filter(reaction=Reaction.DISLIKE).count(),
+        "user_reaction": user_reaction,
     }
 
 
@@ -169,7 +180,7 @@ def load_comments(request):
             status=404,
         )
     return JsonResponse({
-        "comments": [_comment_data(comment) for comment in comments],
+        "comments": [_comment_data(comment, request.user) for comment in comments],
     })
 
 
@@ -220,3 +231,152 @@ def add_comment(request):
         "success": True,
         "comment": _comment_data(comment),
     }, status=201)
+
+
+@login_required
+@require_POST
+def react_to_post(request):
+    post_type = request.POST.get("post_type", "").strip()
+    post_id = request.POST.get("post_id", "").strip()
+    reaction_type = request.POST.get("reaction", "").strip()
+
+    if post_type not in ("news", "project"):
+        return JsonResponse(
+            {"error": "Post type must be news or project."},
+            status=400,
+        )
+
+    if not post_id.isdigit() or int(post_id) < 1:
+        return JsonResponse(
+            {"error": "A valid post ID is required."},
+            status=400,
+        )
+
+    if reaction_type not in (Reaction.LIKE, Reaction.DISLIKE):
+        return JsonResponse(
+            {"error": "Reaction must be like or dislike."},
+            status=400,
+        )
+
+    try:
+        post = (
+            get_object_or_404(News, pk=int(post_id))
+            if post_type == "news"
+            else get_object_or_404(Project, pk=int(post_id))
+        )
+    except Http404:
+        return JsonResponse(
+            {"error": "The selected post was not found."},
+            status=404,
+        )
+
+    lookup = {
+        "user": request.user,
+        post_type: post,
+    }
+    existing = Reaction.objects.filter(**lookup).first()
+
+    if existing and existing.reaction == reaction_type:
+        existing.delete()
+        user_reaction = None
+    elif existing:
+        existing.reaction = reaction_type
+        existing.save(update_fields=["reaction", "updated_at"])
+        user_reaction = reaction_type
+    else:
+        Reaction.objects.create(**lookup, reaction=reaction_type)
+        user_reaction = reaction_type
+
+    reactions = Reaction.objects.filter(**{post_type: post})
+
+    return JsonResponse({
+        "success": True,
+        "like_count": reactions.filter(
+            reaction=Reaction.LIKE
+        ).count(),
+        "dislike_count": reactions.filter(
+            reaction=Reaction.DISLIKE
+        ).count(),
+        "user_reaction": user_reaction,
+    })
+
+@login_required
+@require_GET
+def load_reactions(request):
+    post_type = request.GET.get("post_type", "").strip()
+    post_id = request.GET.get("post_id", "").strip()
+
+    if post_type not in ("news", "project"):
+        return JsonResponse(
+            {"error": "Post type must be news or project."},
+            status=400,
+        )
+
+    if not post_id.isdigit() or int(post_id) < 1:
+        return JsonResponse(
+            {"error": "A valid post ID is required."},
+            status=400,
+        )
+
+    model = News if post_type == "news" else Project
+    post = get_object_or_404(model, pk=int(post_id))
+    reactions = Reaction.objects.filter(**{post_type: post})
+
+    own_reaction = reactions.filter(user=request.user).values_list(
+        "reaction", flat=True
+    ).first()
+
+    return JsonResponse({
+        "success": True,
+        "like_count": reactions.filter(
+            reaction=Reaction.LIKE
+        ).count(),
+        "dislike_count": reactions.filter(
+            reaction=Reaction.DISLIKE
+        ).count(),
+        "user_reaction": own_reaction,
+    })
+
+
+@login_required
+@require_POST
+def react_to_comment(request):
+    comment_id = request.POST.get("comment_id", "").strip()
+    reaction_type = request.POST.get("reaction", "").strip()
+
+    if not comment_id.isdigit() or int(comment_id) < 1:
+        return JsonResponse(
+            {"error": "A valid comment ID is required."},
+            status=400,
+        )
+
+    if reaction_type not in (Reaction.LIKE, Reaction.DISLIKE):
+        return JsonResponse(
+            {"error": "Reaction must be like or dislike."},
+            status=400,
+        )
+
+    comment = get_object_or_404(Comment, pk=int(comment_id))
+    lookup = {"user": request.user, "comment": comment}
+    existing = CommentReaction.objects.filter(**lookup).first()
+
+    if existing and existing.reaction == reaction_type:
+        existing.delete()
+        user_reaction = None
+    elif existing:
+        existing.reaction = reaction_type
+        existing.save(update_fields=["reaction", "updated_at"])
+        user_reaction = reaction_type
+    else:
+        CommentReaction.objects.create(**lookup, reaction=reaction_type)
+        user_reaction = reaction_type
+
+    reactions = CommentReaction.objects.filter(comment=comment)
+
+    return JsonResponse({
+        "success": True,
+        "comment_id": comment.id,
+        "like_count": reactions.filter(reaction=Reaction.LIKE).count(),
+        "dislike_count": reactions.filter(reaction=Reaction.DISLIKE).count(),
+        "user_reaction": user_reaction,
+    })
