@@ -238,3 +238,36 @@ class CommentViewTests(TestCase):
         )
         self.assertEqual(response.status_code, 404)
         self.assertEqual(Comment.objects.count(), 0)
+class LoginLogoutSessionTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username="session_tester",
+            password="TestPass123!",
+        )
+
+    def test_login_creates_authenticated_session(self):
+        response = self.client.post(
+            reverse("login"),
+            {
+                "username": "session_tester",
+                "password": "TestPass123!",
+            },
+        )
+
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(
+            self.client.session.get("_auth_user_id")
+        )
+
+    def test_logout_clears_authenticated_session(self):
+        self.client.force_login(self.user)
+        self.assertTrue(
+            self.client.session.get("_auth_user_id")
+        )
+
+        response = self.client.post(reverse("logout"))
+
+        self.assertEqual(response.status_code, 302)
+        self.assertIsNone(
+            self.client.session.get("_auth_user_id")
+        )
