@@ -1,4 +1,4 @@
-
+﻿
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
@@ -31,13 +31,24 @@ def home(request):
         email = request.POST.get("email", "").strip()
         phone = request.POST.get("phone", "").strip()
         message = request.POST.get("message", "").strip()
-
+        subject = request.POST.get("subject", "").strip()
+        contact_method = request.POST.get("contact_method", "").strip()
+        additional_fields = [
+            value.strip()[:250]
+            for value in request.POST.getlist("extra_text_fields[]")
+            if value.strip()
+        ][:10]
         if name and email and message:
             ContactMessage.objects.create(
                 name=name,
                 email=email,
                 phone=phone,
                 message=message,
+                extra_fields={
+                    "subject": subject,
+                    "contact_method": contact_method,
+                    "additional_text_fields": additional_fields,
+                },
             )
             return redirect("/?contact=success#contact")
 

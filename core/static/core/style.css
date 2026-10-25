@@ -1805,3 +1805,290 @@ header nav ul li.auth-nav {
     color: #b42318;
     font-size: 12px;
 }
+
+/* Requirement 6: Contact form dropdown styling */
+.contact-form select {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #cbd8d1;
+    border-radius: 6px;
+    font: inherit;
+    color: #243746;
+    background: #ffffff;
+    box-sizing: border-box;
+}
+
+.contact-form select:focus {
+    outline: 2px solid #16865c;
+    outline-offset: 1px;
+    border-color: #16865c;
+}
+
+/* Requirement 6: Dynamic additional text fields */
+.additional-fields-section {
+    margin: 18px 0;
+}
+
+.additional-fields-section > label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.additional-field-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.additional-field-row input {
+    flex: 1;
+    min-width: 0;
+    padding: 12px 14px;
+    border: 1px solid #cbd8d1;
+    border-radius: 6px;
+    font: inherit;
+    box-sizing: border-box;
+}
+
+.additional-field-row input:focus {
+    outline: 2px solid #16865c;
+    outline-offset: 1px;
+    border-color: #16865c;
+}
+
+#add-extra-field,
+.additional-field-row .remove-extra-field {
+    padding: 10px 14px;
+    border: 1px solid #16865c;
+    border-radius: 6px;
+    background: #ffffff;
+    color: #16865c;
+    font: inherit;
+    cursor: pointer;
+}
+
+.additional-field-row .remove-extra-field:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+#add-extra-field:hover,
+.additional-field-row .remove-extra-field:not(:disabled):hover {
+    background: #16865c;
+    color: #ffffff;
+}
+
+@media (max-width: 480px) {
+    .additional-field-row {
+        align-items: stretch;
+        flex-direction: column;
+    }
+}
+
+/* Requirement 6: Improve contact form field spacing */
+.contact-form label {
+    display: block;
+    margin: 16px 0 7px;
+}
+
+.contact-form input,
+.contact-form textarea,
+.contact-form select {
+    display: block;
+    width: 100%;
+    margin: 0 0 14px;
+    box-sizing: border-box;
+}
+
+.contact-form .additional-fields-section {
+    margin: 18px 0;
+}
+
+.contact-form .additional-fields-section > label {
+    margin-top: 16px;
+}
+
+.contact-form .additional-field-row input {
+    margin-bottom: 0;
+}
+
+.contact-form .additional-field-row .remove-extra-field {
+    margin-top: 0;
+}
+
+.contact-form #add-extra-field {
+    margin-top: 10px;
+}
+
+
+
+/* SCDF Contact Form ? polished layout */
+#contact .contact-form {
+    width: 100%;
+    max-width: 720px;
+    margin: 32px auto 0;
+    padding: clamp(22px, 4vw, 38px);
+    background: #ffffff;
+    border: 1px solid #e3ece7;
+    border-radius: 18px;
+    box-shadow: 0 14px 40px rgba(18, 52, 90, 0.09);
+    box-sizing: border-box;
+}
+
+#contact .contact-form h3 {
+    margin: 0 0 8px;
+    color: #12345a;
+    font-size: clamp(23px, 3vw, 29px);
+    line-height: 1.3;
+    font-weight: 750;
+}
+
+#contact .contact-form label {
+    display: block;
+    margin: 18px 0 8px;
+    color: #203b53;
+    font-size: 14px;
+    font-weight: 650;
+}
+
+#contact .contact-form input,
+#contact .contact-form select,
+#contact .contact-form textarea {
+    display: block;
+    width: 100%;
+    min-height: 48px;
+    margin: 0;
+    padding: 12px 14px;
+    color: #243746;
+    background: #fbfdfc;
+    border: 1px solid #d5e1dc;
+    border-radius: 9px;
+    font: inherit;
+    font-size: 15px;
+    box-sizing: border-box;
+    transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+}
+
+#contact .contact-form input::placeholder,
+#contact .contact-form textarea::placeholder {
+    color: #84939b;
+}
+
+#contact .contact-form input:focus,
+#contact .contact-form select:focus,
+#contact .contact-form textarea:focus {
+    outline: none;
+    border-color: #16865c;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(22, 134, 92, .12);
+}
+
+#contact .contact-form textarea {
+    min-height: 145px;
+    resize: vertical;
+}
+
+#contact .contact-form .additional-fields-section {
+    margin: 22px 0;
+    padding: 18px;
+    background: #f5faf7;
+    border: 1px solid #e0eee6;
+    border-radius: 12px;
+}
+
+#contact .contact-form .additional-fields-section > label {
+    margin-top: 0;
+    font-size: 15px;
+}
+
+#contact .contact-form .additional-field-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 10px;
+}
+
+#contact .contact-form .additional-field-row input {
+    flex: 1;
+    min-width: 0;
+}
+
+#contact .contact-form .additional-field-row .remove-extra-field,
+#contact .contact-form #add-extra-field {
+    width: auto;
+    min-height: 42px;
+    margin: 0;
+    padding: 10px 14px;
+    color: #16865c;
+    background: #ffffff;
+    border: 1px solid #16865c;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 650;
+    cursor: pointer;
+    transition: background .2s ease, color .2s ease, transform .2s ease;
+}
+
+#contact .contact-form .additional-field-row .remove-extra-field:disabled {
+    opacity: .45;
+    cursor: not-allowed;
+}
+
+#contact .contact-form .additional-field-row .remove-extra-field:not(:disabled):hover,
+#contact .contact-form #add-extra-field:hover {
+    color: #ffffff;
+    background: #16865c;
+}
+
+#contact .contact-form > button[type="submit"] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 50px;
+    margin-top: 12px;
+    padding: 14px 22px;
+    color: #ffffff;
+    background: linear-gradient(135deg, #16865c, #116b49);
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 7px 18px rgba(22, 134, 92, .2);
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+
+#contact .contact-form > button[type="submit"]:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 22px rgba(22, 134, 92, .26);
+}
+
+#contact .contact-form > button[type="submit"]:focus-visible,
+#contact .contact-form #add-extra-field:focus-visible,
+#contact .contact-form .remove-extra-field:focus-visible {
+    outline: 3px solid rgba(22, 134, 92, .3);
+    outline-offset: 3px;
+}
+
+@media (max-width: 480px) {
+    #contact .contact-form {
+        padding: 20px 16px;
+        border-radius: 13px;
+    }
+
+    #contact .contact-form .additional-fields-section {
+        padding: 14px;
+    }
+
+    #contact .contact-form .additional-field-row {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    #contact .contact-form .additional-field-row .remove-extra-field {
+        align-self: flex-start;
+    }
+}

@@ -44,6 +44,7 @@ class ContactMessage(models.Model):
     email = models.EmailField()
     phone = models.CharField(max_length=20, blank=True)
     message = models.TextField()
+    extra_fields = models.JSONField(default=dict, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

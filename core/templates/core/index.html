@@ -537,7 +537,33 @@
                     autocomplete="tel"
                 >
 
-                <label for="contact-message">Message</label>
+                                <label for="contact-subject">Subject</label>
+                <select id="contact-subject" name="subject" required>
+                    <option value="">Select a subject</option>
+                    <option value="general">General Inquiry</option>
+                    <option value="volunteer">Volunteer</option>
+                    <option value="partnership">Partnership</option>
+                    <option value="donation">Donation</option>
+                    <option value="other">Other</option>
+                </select>
+
+                <label for="contact-method">Preferred Contact Method</label>
+                <select id="contact-method" name="contact_method" required>
+                    <option value="">Select a contact method</option>
+                    <option value="email">Email</option>
+                    <option value="phone">Phone</option>
+                </select>
+<div class="additional-fields-section">
+    <label>Additional Information (Optional)</label>
+    <div id="additional-fields-container">
+        <div class="additional-field-row">
+            <input type="text" name="extra_text_fields[]" maxlength="250" placeholder="Enter additional information">
+            <button type="button" class="remove-extra-field" disabled>Remove</button>
+        </div>
+    </div>
+    <button type="button" id="add-extra-field">+ Add Another Field</button>
+</div>
+<label for="contact-message">Message</label>
                 <textarea
                     id="contact-message"
                     name="message"
@@ -887,6 +913,68 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         }
     });
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const container = document.getElementById("additional-fields-container");
+    const addButton = document.getElementById("add-extra-field");
+
+    if (!container || !addButton) return;
+
+    function updateRemoveButtons() {
+        const rows = container.querySelectorAll(".additional-field-row");
+        rows.forEach(function (row) {
+            const removeButton = row.querySelector(".remove-extra-field");
+            if (removeButton) {
+                removeButton.disabled = rows.length <= 1;
+            }
+        });
+    }
+
+    addButton.addEventListener("click", function () {
+        const rows = container.querySelectorAll(".additional-field-row");
+        if (rows.length >= 10) {
+            alert("You can add up to 10 additional fields.");
+            return;
+        }
+
+        const row = document.createElement("div");
+        row.className = "additional-field-row";
+
+        const input = document.createElement("input");
+        input.type = "text";
+        input.name = "extra_text_fields[]";
+        input.maxLength = 250;
+        input.placeholder = "Enter additional information";
+
+        const removeButton = document.createElement("button");
+        removeButton.type = "button";
+        removeButton.className = "remove-extra-field";
+        removeButton.textContent = "Remove";
+        removeButton.addEventListener("click", function () {
+            row.remove();
+            updateRemoveButtons();
+        });
+
+        row.appendChild(input);
+        row.appendChild(removeButton);
+        container.appendChild(row);
+        updateRemoveButtons();
+        input.focus();
+    });
+
+    container.querySelectorAll(".remove-extra-field").forEach(function (button) {
+        button.addEventListener("click", function () {
+            const rows = container.querySelectorAll(".additional-field-row");
+            if (rows.length > 1) {
+                button.closest(".additional-field-row").remove();
+                updateRemoveButtons();
+            }
+        });
+    });
+
+    updateRemoveButtons();
+});
 </script>
 </body>
 </html>
