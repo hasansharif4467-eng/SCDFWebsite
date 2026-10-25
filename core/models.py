@@ -1,5 +1,21 @@
 
 from django.db import models
+from django.conf import settings
+
+
+class EmailVerification(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="email_verifications",
+    )
+    token = models.UUIDField(unique=True, editable=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    expires_at = models.DateTimeField()
+    is_used = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Email verification for {self.user.username}"
 
 
 class Project(models.Model):

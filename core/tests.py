@@ -3,7 +3,7 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from django.urls import reverse
 
-from .models import ContactMessage, News, Project, Comment, Reaction
+from .models import ContactMessage, News, Project, Comment, Reaction, EmailVerification
 
 
 class HomeViewTests(TestCase):
@@ -360,3 +360,130 @@ class ReactionViewTests(TestCase):
         )
         self.assertEqual(response.status_code, 400)
         self.assertEqual(Reaction.objects.count(), 0)
+
+
+
+class EmailVerificationTests(TestCase):
+    def setUp(self):
+        from datetime import timedelta
+        from django.utils import timezone
+        from uuid import uuid4
+
+        self.email = "verification@example.com"
+        self.user = User.objects.create_user(
+            username="verification_user",
+            email=self.email,
+            password="TestPass123!",
+            is_active=False,
+        )
+        self.verification = EmailVerification.objects.create(
+            user=self.user,
+            token=uuid4(),
+            expires_at=timezone.now() + timedelta(hours=24),
+        )
+
+    def test_valid_token_activates_account(self):
+        response = self.client.get(
+            reverse("verify_email", args=[self.verification.token])
+        )
+
+        self.user.refresh_from_db()
+        self.verification.refresh_from_db()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(self.user.is_active)
+        self.assertTrue(self.verification.is_used)
+        self.assertContains(response, "Email Verified!")
+
+    def test_expired_token_does_not_activate_account(self):
+        from datetime import timedelta
+        from django.utils import timezone
+
+        self.verification.expires_at = timezone.now() - timedelta(minutes=1)
+        self.verification.save(update_fields=["expires_at"])
+
+        response = self.client.get(
+            reverse("verify_email", args=[self.verification.token])
+        )
+
+        self.user.refresh_from_db()
+        self.verification.refresh_from_db()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(self.user.is_active)
+        self.assertTrue(self.verification.is_used)
+        self.assertContains(response, "Verification Link Expired")
+
+    def test_used_token_cannot_be_reused(self):
+        self.verification.is_used = True
+        self.verification.save(update_fields=["is_used"])
+
+        response = self.client.get(
+            reverse("verify_email", args=[self.verification.token])
+        )
+
+        self.user.refresh_from_db()
+
+        self.assertEqual(response.status_code, 404)
+        self.assertFalse(self.user.is_active)
+
+    def test_invalid_token_returns_404(self):
+        from uuid import uuid4
+
+        response = self.client.get(
+            reverse("verify_email", args=[uuid4()])
+        )
+
+        self.assertEqual(response.status_code, 404)
+
+    def test_registration_sends_verification_email_without_login(self):
+        from django.core import mail
+        from django.test import override_settings
+
+        with override_settings(ALLOWED_HOSTS=["testserver"]):
+            response = self.client.post(
+                reverse("register"),
+                {
+                    "username": "new_verification_user",
+                    "email": "new-verification@example.com",
+                    "password1": "StrongPass123!Secure",
+                    "password2": "StrongPass123!Secure",
+                },
+            )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(mail.outbox), 1)
+
+        user = User.objects.get(username="new_verification_user")
+        self.assertFalse(user.is_active)
+        self.assertNotIn("_auth_user_id", self.client.session)
+        self.assertTrue(
+            EmailVerification.objects.filter(user=user).exists()
+        )
+        self.assertContains(response, "Check your email")
+
+    def test_registration_rejects_duplicate_email(self):
+        from django.test import override_settings
+
+        User.objects.create_user(
+            username="existing_email_user",
+            email="duplicate@example.com",
+            password="TestPass123!",
+        )
+
+        with override_settings(ALLOWED_HOSTS=["testserver"]):
+            response = self.client.post(
+                reverse("register"),
+                {
+                    "username": "duplicate_email_user",
+                    "email": "DUPLICATE@example.com",
+                    "password1": "StrongPass123!Secure",
+                    "password2": "StrongPass123!Secure",
+                },
+            )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(
+            User.objects.filter(username="duplicate_email_user").exists()
+        )
+        self.assertContains(response, "already registered")

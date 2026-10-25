@@ -7,6 +7,7 @@ urlpatterns = [
     path("", views.home, name="home"),
     path("check-username/", views.check_username, name="check_username"),
     path("register/", views.register, name="register"),
+    path("verify-email/<uuid:token>/", views.verify_email, name="verify_email"),
     path(
         "login/",
         auth_views.LoginView.as_view(template_name="core/login.html"),

@@ -10,9 +10,15 @@ from django.views.decorators.http import require_POST, require_GET
 from django import forms
 from django.core.exceptions import ValidationError
 from django.db.models import Q
+from django.core.mail import send_mail
+from django.conf import settings
+from django.urls import reverse
+from django.utils import timezone
+from datetime import timedelta
+from uuid import uuid4
 import re
 
-from .models import Project, News, ContactMessage, Comment, Reaction, CommentReaction
+from .models import Project, News, ContactMessage, Comment, Reaction, CommentReaction, EmailVerification
 
 
 def home(request):
@@ -83,6 +89,7 @@ def check_username(request):
     })
 
 
+
 def register(request):
     if request.method == "POST":
         form = UserCreationForm(request.POST)
@@ -95,11 +102,60 @@ def register(request):
             email = ""
 
         if form.is_valid() and email:
+            if User.objects.filter(email__iexact=email).exists():
+                return render(request, "core/register.html", {
+                    "form": form,
+                    "registration_error": (
+                        "This email address is already registered. "
+                        "Please use another email address."
+                    ),
+                })
+
             user = form.save(commit=False)
             user.email = email
+            user.is_active = False
             user.save()
-            login(request, user)
-            return redirect("home")
+
+            verification = EmailVerification.objects.create(
+                user=user,
+                token=uuid4(),
+                expires_at=timezone.now() + timedelta(hours=24),
+            )
+
+            verification_url = request.build_absolute_uri(
+                reverse("verify_email", args=[str(verification.token)])
+            )
+
+            try:
+                send_mail(
+                    "Verify your SCDFWebsite account",
+                    (
+                        f"Hello {user.username},\n\n"
+                        "Please verify your email address using this link:\n"
+                        f"{verification_url}\n\n"
+                        "This link expires in 24 hours."
+                    ),
+                    settings.DEFAULT_FROM_EMAIL,
+                    [user.email],
+                    fail_silently=False,
+                )
+            except Exception:
+                return render(request, "core/register.html", {
+                    "form": form,
+                    "registration_error": (
+                        "We could not send the verification email. "
+                        "Your account is not active yet. Please contact "
+                        "the site administrator for help."
+                    ),
+                })
+
+            return render(request, "core/register.html", {
+                "form": UserCreationForm(),
+                "registration_error": (
+                    "Registration received! Check your email and click "
+                    "the verification link to activate your account."
+                ),
+            })
 
         return render(request, "core/register.html", {
             "form": form,
@@ -113,6 +169,31 @@ def register(request):
         "form": UserCreationForm(),
     })
 
+
+def verify_email(request, token):
+    verification = get_object_or_404(
+        EmailVerification,
+        token=token,
+        is_used=False,
+    )
+
+    if verification.expires_at <= timezone.now():
+        verification.is_used = True
+        verification.save(update_fields=["is_used"])
+        return render(request, "core/verify_email.html", {
+            "status": "expired",
+        })
+
+    user = verification.user
+    user.is_active = True
+    user.save(update_fields=["is_active"])
+
+    verification.is_used = True
+    verification.save(update_fields=["is_used"])
+
+    return render(request, "core/verify_email.html", {
+        "status": "success",
+    })
 
 def _get_post_for_comment(request):
     """Return the selected News or Project, or None for invalid input."""
