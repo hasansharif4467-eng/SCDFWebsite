@@ -39,3 +39,13 @@ class CommentAdmin(admin.ModelAdmin):
     search_fields = ("content", "author__username")
     list_filter = ("created_at",)
     readonly_fields = ("created_at",)
+
+from .models import Rating
+
+
+@admin.register(Rating)
+class RatingAdmin(admin.ModelAdmin):
+    list_display = ("user", "news", "project", "score", "created_at", "updated_at")
+    search_fields = ("user__username", "news__title", "project__title")
+    list_filter = ("score", "created_at")
+    readonly_fields = ("created_at", "updated_at")

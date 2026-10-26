@@ -1,4 +1,4 @@
-
+﻿
 from django.urls import path
 from django.contrib.auth import views as auth_views
 from . import views
@@ -23,4 +23,7 @@ urlpatterns = [
     path("reactions/", views.react_to_post, name="react_to_post"),
     path("reactions/load/", views.load_reactions, name="load_reactions"),
     path("comments/react/", views.react_to_comment, name="react_to_comment"),
+    path("ratings/load/", views.load_ratings, name="load_ratings"),
+    path("ratings/", views.rate_post, name="rate_post"),
 ]
+

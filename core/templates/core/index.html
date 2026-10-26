@@ -1,4 +1,4 @@
-
+﻿
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -202,6 +202,17 @@
                                     data-reaction="dislike">👎 Dislike <span class="dislike-count">0</span></button>
                             <p class="reaction-message" role="status"></p>
                         </div>
+                        <div class="rating-section"
+                             data-post-type="project"
+                             data-post-id="{{ project.id }}">
+                            <p class="rating-summary" aria-live="polite">Loading rating...</p>
+                            <div class="rating-stars" role="group" aria-label="Rate this project">
+                                {% for star in "12345" %}
+                                    <button type="button" class="rating-star" data-score="{{ star }}" aria-label="{{ star }} star">★</button>
+                                {% endfor %}
+                            </div>
+                            <p class="rating-message" role="status"></p>
+                        </div>
                         <div class="comment-section"
                              data-post-type="project"
                              data-post-id="{{ project.id }}">
@@ -291,6 +302,17 @@
                             <button type="button" class="reaction-button"
                                     data-reaction="dislike">👎 Dislike <span class="dislike-count">0</span></button>
                             <p class="reaction-message" role="status"></p>
+                        </div>
+                        <div class="rating-section"
+                             data-post-type="news"
+                             data-post-id="{{ news.id }}">
+                            <p class="rating-summary" aria-live="polite">Loading rating...</p>
+                            <div class="rating-stars" role="group" aria-label="Rate this news">
+                                {% for star in "12345" %}
+                                    <button type="button" class="rating-star" data-score="{{ star }}" aria-label="{{ star }} star">★</button>
+                                {% endfor %}
+                            </div>
+                            <p class="rating-message" role="status"></p>
                         </div>
                         <div class="comment-section"
                              data-post-type="news"
@@ -976,5 +998,118 @@ document.addEventListener("DOMContentLoaded", function () {
     updateRemoveButtons();
 });
 </script>
+
+<script id="scdf-rating-script">
+document.addEventListener("DOMContentLoaded", function () {
+    const isAuthenticated = {{ user.is_authenticated|yesno:"true,false" }};
+    const loadUrl = "{% url 'load_ratings' %}";
+    const rateUrl = "{% url 'rate_post' %}";
+
+    document.querySelectorAll(".rating-section").forEach(function (section) {
+        const postType = section.dataset.postType;
+        const postId = section.dataset.postId;
+        const summary = section.querySelector(".rating-summary");
+        const message = section.querySelector(".rating-message");
+        const buttons = section.querySelectorAll(".rating-star");
+
+        function paintStars(score) {
+            buttons.forEach(function (button) {
+                const selected = Number(button.dataset.score) <= Number(score || 0);
+                button.classList.toggle("is-selected", selected);
+                button.setAttribute("aria-pressed", String(
+                    Number(button.dataset.score) === Number(score || 0)
+                ));
+            });
+        }
+
+        function updateSummary(data) {
+            summary.textContent =
+                "? " + Number(data.average_rating).toFixed(1) +
+                " / 5 (" + data.total_ratings + " ratings)";
+            paintStars(data.user_rating);
+        }
+
+        async function loadRating() {
+            try {
+                const url = new URL(loadUrl, window.location.origin);
+                url.searchParams.set("post_type", postType);
+                url.searchParams.set("post_id", postId);
+
+                const response = await fetch(url.toString(), {
+                    headers: { "X-Requested-With": "XMLHttpRequest" }
+                });
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || "Could not load ratings.");
+                }
+
+                updateSummary(data);
+            } catch (error) {
+                summary.textContent = "Rating could not be loaded.";
+                console.error("Rating load error:", error);
+            }
+        }
+
+        buttons.forEach(function (button) {
+            button.addEventListener("click", async function () {
+                if (!isAuthenticated) {
+                    message.textContent = "Please log in to rate.";
+                    return;
+                }
+
+                const csrfInput = section.parentElement.querySelector(
+                    '.comment-form input[name="csrfmiddlewaretoken"]'
+                ) || document.querySelector(
+                    '.comment-form input[name="csrfmiddlewaretoken"]'
+                );
+
+                if (!csrfInput) {
+                    message.textContent = "Security token missing. Refresh the page and try again.";
+                    return;
+                }
+
+                buttons.forEach(function (item) {
+                    item.disabled = true;
+                });
+                message.textContent = "Saving rating...";
+
+                try {
+                    const formData = new FormData();
+                    formData.append("post_type", postType);
+                    formData.append("post_id", postId);
+                    formData.append("score", button.dataset.score);
+                    formData.append("csrfmiddlewaretoken", csrfInput.value);
+
+                    const response = await fetch(rateUrl, {
+                        method: "POST",
+                        body: formData,
+                        headers: { "X-Requested-With": "XMLHttpRequest" }
+                    });
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(data.error || "Could not save rating.");
+                    }
+
+                    updateSummary(data);
+                    message.textContent = "Your rating has been saved.";
+                } catch (error) {
+                    message.textContent =
+                        error.message || "Could not save rating.";
+                } finally {
+                    buttons.forEach(function (item) {
+                        item.disabled = false;
+                    });
+                }
+            });
+        });
+
+        loadRating();
+    });
+});
+</script>
+
 </body>
 </html>
+

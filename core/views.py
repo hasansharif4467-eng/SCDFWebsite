@@ -9,7 +9,7 @@ from django.http import Http404
 from django.views.decorators.http import require_POST, require_GET
 from django import forms
 from django.core.exceptions import ValidationError
-from django.db.models import Q
+from django.db.models import Q, Avg
 from django.core.mail import send_mail
 from django.conf import settings
 from django.urls import reverse
@@ -18,7 +18,7 @@ from datetime import timedelta
 from uuid import uuid4
 import re
 
-from .models import Project, News, ContactMessage, Comment, Reaction, CommentReaction, EmailVerification
+from .models import Project, News, ContactMessage, Comment, Reaction, CommentReaction, EmailVerification, Rating
 
 
 def home(request):
@@ -472,3 +472,87 @@ def react_to_comment(request):
         "dislike_count": reactions.filter(reaction=Reaction.DISLIKE).count(),
         "user_reaction": user_reaction,
     })
+
+
+
+@require_GET
+def load_ratings(request):
+    post_type = request.GET.get("post_type", "").strip()
+    post_id = request.GET.get("post_id", "").strip()
+
+    if post_type not in ("news", "project"):
+        return JsonResponse(
+            {"error": "Post type must be news or project."},
+            status=400,
+        )
+
+    if not post_id.isdigit() or int(post_id) < 1:
+        return JsonResponse(
+            {"error": "A valid post ID is required."},
+            status=400,
+        )
+
+    model = News if post_type == "news" else Project
+    post = get_object_or_404(model, pk=int(post_id))
+    ratings = Rating.objects.filter(**{post_type: post})
+    average = ratings.aggregate(Avg("score"))["score__avg"]
+
+    user_rating = None
+    if request.user.is_authenticated:
+        user_rating = ratings.filter(user=request.user).values_list(
+            "score", flat=True
+        ).first()
+
+    return JsonResponse({
+        "success": True,
+        "average_rating": round(average, 1) if average is not None else 0,
+        "total_ratings": ratings.count(),
+        "user_rating": user_rating,
+    })
+
+
+@login_required
+@require_POST
+def rate_post(request):
+    post_type = request.POST.get("post_type", "").strip()
+    post_id = request.POST.get("post_id", "").strip()
+    score = request.POST.get("score", "").strip()
+
+    if post_type not in ("news", "project"):
+        return JsonResponse(
+            {"error": "Post type must be news or project."},
+            status=400,
+        )
+
+    if not post_id.isdigit() or int(post_id) < 1:
+        return JsonResponse(
+            {"error": "A valid post ID is required."},
+            status=400,
+        )
+
+    if score not in ("1", "2", "3", "4", "5"):
+        return JsonResponse(
+            {"error": "Rating must be between 1 and 5 stars."},
+            status=400,
+        )
+
+    model = News if post_type == "news" else Project
+    post = get_object_or_404(model, pk=int(post_id))
+    lookup = {"user": request.user, post_type: post}
+
+    rating, created = Rating.objects.update_or_create(
+        **lookup,
+        defaults={"score": int(score)},
+    )
+
+    ratings = Rating.objects.filter(**{post_type: post})
+    average = ratings.aggregate(Avg("score"))["score__avg"]
+
+    return JsonResponse({
+        "success": True,
+        "created": created,
+        "average_rating": round(average, 1) if average is not None else 0,
+        "total_ratings": ratings.count(),
+        "user_rating": rating.score,
+    })
+

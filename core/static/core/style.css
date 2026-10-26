@@ -2092,3 +2092,73 @@ header nav ul li.auth-nav {
         align-self: flex-start;
     }
 }
+/* SCDF real-time rating styles */
+.rating-section {
+    margin: 14px 0;
+    padding: 12px 14px;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    background: #f8fafc;
+}
+
+.rating-summary {
+    margin: 0 0 7px;
+    color: #334155;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.rating-stars {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.rating-star {
+    padding: 2px;
+    border: 0;
+    background: transparent;
+    color: #cbd5e1;
+    font-size: 28px;
+    line-height: 1.2;
+    cursor: pointer;
+    transition: color 0.15s ease, transform 0.15s ease;
+}
+
+.rating-star:hover,
+.rating-star:focus-visible,
+.rating-star.is-selected {
+    color: #f59e0b;
+}
+
+.rating-star:hover {
+    transform: scale(1.12);
+}
+
+.rating-star:focus-visible {
+    outline: 2px solid #16865c;
+    outline-offset: 3px;
+    border-radius: 4px;
+}
+
+.rating-star:disabled {
+    cursor: wait;
+    opacity: 0.65;
+}
+
+.rating-message {
+    min-height: 18px;
+    margin: 6px 0 0;
+    color: #475569;
+    font-size: 12px;
+}
+
+@media (max-width: 480px) {
+    .rating-section {
+        padding: 10px;
+    }
+
+    .rating-star {
+        font-size: 25px;
+    }
+}

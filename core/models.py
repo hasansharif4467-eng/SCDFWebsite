@@ -158,3 +158,45 @@ class CommentReaction(models.Model):
 
     def __str__(self):
         return f"{self.user.username}: {self.reaction} on comment {self.comment_id}"
+
+class Rating(models.Model):
+    user = models.ForeignKey(
+        "auth.User",
+        on_delete=models.CASCADE,
+        related_name="scdf_ratings",
+    )
+    news = models.ForeignKey(
+        News,
+        on_delete=models.CASCADE,
+        related_name="ratings",
+        blank=True,
+        null=True,
+    )
+    project = models.ForeignKey(
+        Project,
+        on_delete=models.CASCADE,
+        related_name="ratings",
+        blank=True,
+        null=True,
+    )
+    score = models.PositiveSmallIntegerField(
+        choices=[(i, f"{i} Star") for i in range(1, 6)],
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "news"],
+                name="unique_user_news_rating",
+            ),
+            models.UniqueConstraint(
+                fields=["user", "project"],
+                name="unique_user_project_rating",
+            ),
+        ]
+
+    def __str__(self):
+        target = self.news or self.project
+        return f"{self.user.username}: {self.score} stars for {target}"
