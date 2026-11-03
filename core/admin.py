@@ -40,7 +40,7 @@ class CommentAdmin(admin.ModelAdmin):
     list_filter = ("created_at",)
     readonly_fields = ("created_at",)
 
-from .models import Rating
+from .models import Rating, Media
 
 
 @admin.register(Rating)
@@ -49,3 +49,12 @@ class RatingAdmin(admin.ModelAdmin):
     search_fields = ("user__username", "news__title", "project__title")
     list_filter = ("score", "created_at")
     readonly_fields = ("created_at", "updated_at")
+
+
+@admin.register(Media)
+class MediaAdmin(admin.ModelAdmin):
+    list_display = ("title", "media_type", "is_active", "published_at")
+    search_fields = ("title", "description")
+    list_filter = ("media_type", "is_active", "published_at")
+    list_editable = ("is_active",)
+    readonly_fields = ("published_at",)

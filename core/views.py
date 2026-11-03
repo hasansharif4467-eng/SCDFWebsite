@@ -1,5 +1,6 @@
 ﻿
 from django.shortcuts import render, redirect, get_object_or_404
+from django.core.paginator import Paginator
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 from django.contrib.auth.models import User
@@ -18,12 +19,19 @@ from datetime import timedelta
 from uuid import uuid4
 import re
 
-from .models import Project, News, ContactMessage, Comment, Reaction, CommentReaction, EmailVerification, Rating
+from .models import Project, News, ContactMessage, Comment, Reaction, CommentReaction, EmailVerification, Rating, Media
 
 
 def home(request):
-    projects = Project.objects.all().order_by("-created_at")
-    news_list = News.objects.all().order_by("-published_at")
+    projects_page = Paginator(
+        Project.objects.all().order_by("-created_at"), 3
+    ).get_page(request.GET.get("projects_page"))
+    media_list = Media.objects.filter(is_active=True).order_by("-published_at")
+
+    news_page = Paginator(
+        News.objects.all().order_by("-published_at"), 3
+    ).get_page(request.GET.get("news_page"))
+
     success = False
 
     if request.method == "POST":
@@ -56,8 +64,11 @@ def home(request):
         success = True
 
     context = {
-        "projects": projects,
-        "news_list": news_list,
+        "projects": projects_page,
+        "news_list": news_page,
+        "projects_page": projects_page,
+        "news_page": news_page,
+        "media_list": media_list,
         "contact_success": success,
     }
     return render(request, "core/index.html", context)

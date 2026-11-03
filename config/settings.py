@@ -143,3 +143,7 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER or 'noreply@scdf.local'
 LOGIN_URL = "login"
 LOGIN_REDIRECT_URL = "home"
 LOGOUT_REDIRECT_URL = "home"
+
+# Uploaded media files (Project and News images)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'

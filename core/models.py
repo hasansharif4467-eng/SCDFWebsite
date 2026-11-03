@@ -1,3 +1,4 @@
+import re
 
 from django.db import models
 from django.conf import settings
@@ -80,6 +81,7 @@ class Comment(models.Model):
     def __str__(self):
         return f"Comment by {self.author.username}"
 
+
 class Reaction(models.Model):
     LIKE = "like"
     DISLIKE = "dislike"
@@ -130,6 +132,7 @@ class Reaction(models.Model):
     def __str__(self):
         return f"{self.user.username}: {self.reaction}"
 
+
 class CommentReaction(models.Model):
     user = models.ForeignKey(
         "auth.User",
@@ -158,6 +161,7 @@ class CommentReaction(models.Model):
 
     def __str__(self):
         return f"{self.user.username}: {self.reaction} on comment {self.comment_id}"
+
 
 class Rating(models.Model):
     user = models.ForeignKey(
@@ -200,3 +204,74 @@ class Rating(models.Model):
     def __str__(self):
         target = self.news or self.project
         return f"{self.user.username}: {self.score} stars for {target}"
+
+
+class Media(models.Model):
+    YOUTUBE = "youtube"
+    VIDEO = "video"
+    AUDIO = "audio"
+
+    MEDIA_TYPES = [
+        (YOUTUBE, "YouTube"),
+        (VIDEO, "Video"),
+        (AUDIO, "Audio"),
+    ]
+
+    title = models.CharField(max_length=200)
+    description = models.TextField(blank=True)
+    media_type = models.CharField(
+        max_length=10,
+        choices=MEDIA_TYPES,
+        default=YOUTUBE,
+    )
+    youtube_url = models.URLField(blank=True)
+    media_file = models.FileField(
+        upload_to="media/files/",
+        blank=True,
+        null=True,
+    )
+    thumbnail = models.ImageField(
+        upload_to="media/thumbnails/",
+        blank=True,
+        null=True,
+    )
+    published_at = models.DateTimeField(auto_now_add=True)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ["-published_at"]
+
+    @property
+    def youtube_embed_url(self):
+        if not self.youtube_url:
+            return ""
+
+        from urllib.parse import urlparse, parse_qs
+
+        parsed = urlparse(self.youtube_url)
+        video_id = ""
+
+        if parsed.hostname in ("youtu.be", "www.youtu.be"):
+            video_id = parsed.path.strip("/").split("/")[0]
+
+        elif parsed.hostname in (
+            "youtube.com",
+            "www.youtube.com",
+            "m.youtube.com",
+        ):
+            if parsed.path == "/watch":
+                video_id = parse_qs(parsed.query).get("v", [""])[0]
+
+            elif parsed.path.startswith("/embed/"):
+                video_id = parsed.path.split("/embed/")[1].split("/")[0]
+
+            elif parsed.path.startswith("/shorts/"):
+                video_id = parsed.path.split("/shorts/")[1].split("/")[0]
+
+        if not re.fullmatch(r"[A-Za-z0-9_-]{11}", video_id):
+            return ""
+
+        return f"https://www.youtube-nocookie.com/embed/{video_id}"
+
+    def __str__(self):
+        return self.title

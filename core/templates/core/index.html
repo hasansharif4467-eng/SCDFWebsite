@@ -29,6 +29,7 @@
                 <li><a href="#programs">Programs</a></li>
                 <li><a href="#projects">Projects</a></li>
                 <li><a href="#news">News</a></li>
+                <li><a href="#media">Media</a></li>
                 <li><a href="#contact">Contact</a></li>
                 {% if user.is_authenticated %}
                 <li class="auth-nav"><span>Welcome, {{ user.username }}</span></li>
@@ -262,6 +263,30 @@
                 <p>No projects have been published yet.</p>
             {% endfor %}
         </div>
+
+        {% if projects_page.paginator.num_pages > 1 %}
+        <nav class="scdf-pagination" aria-label="Projects pagination">
+            <span class="pagination-info">
+                Showing {{ projects_page.start_index }} to {{ projects_page.end_index }}
+                of {{ projects_page.paginator.count }} projects
+            </span>
+            <div class="pagination-controls">
+                {% if projects_page.has_previous %}
+                    <a class="page-nav" href="?projects_page={{ projects_page.previous_page_number }}&news_page={{ news_page.number }}#projects">Previous</a>
+                {% endif %}
+                {% for num in projects_page.paginator.page_range %}
+                    {% if projects_page.number == num %}
+                        <span class="page-number active" aria-current="page">{{ num }}</span>
+                    {% else %}
+                        <a class="page-number" href="?projects_page={{ num }}&news_page={{ news_page.number }}#projects">{{ num }}</a>
+                    {% endif %}
+                {% endfor %}
+                {% if projects_page.has_next %}
+                    <a class="page-nav" href="?projects_page={{ projects_page.next_page_number }}&news_page={{ news_page.number }}#projects">Next</a>
+                {% endif %}
+            </div>
+        </nav>
+        {% endif %}
     </section>
 
     <!-- Latest News Section -->
@@ -363,8 +388,214 @@
                 <p>No news has been published yet.</p>
             {% endfor %}
         </div>
+
+        {% if news_page.paginator.num_pages > 1 %}
+        <nav class="scdf-pagination" aria-label="News pagination">
+            <span class="pagination-info">
+                Showing {{ news_page.start_index }} to {{ news_page.end_index }}
+                of {{ news_page.paginator.count }} news articles
+            </span>
+            <div class="pagination-controls">
+                {% if news_page.has_previous %}
+                    <a class="page-nav" href="?projects_page={{ projects_page.number }}&news_page={{ news_page.previous_page_number }}#news">Previous</a>
+                {% endif %}
+                {% for num in news_page.paginator.page_range %}
+                    {% if news_page.number == num %}
+                        <span class="page-number active" aria-current="page">{{ num }}</span>
+                    {% else %}
+                        <a class="page-number" href="?projects_page={{ projects_page.number }}&news_page={{ num }}#news">{{ num }}</a>
+                    {% endif %}
+                {% endfor %}
+                {% if news_page.has_next %}
+                    <a class="page-nav" href="?projects_page={{ projects_page.number }}&news_page={{ news_page.next_page_number }}#news">Next</a>
+                {% endif %}
+            </div>
+        </nav>
+        {% endif %}
     </section>
 
+
+
+   <!-- SCDF Media & Stories Section -->
+<section class="media-section" id="media">
+    <div class="media-container">
+
+        <div class="media-heading">
+            <p class="section-subtitle">WATCH | LISTEN | EXPLORE</p>
+            <h2>Stories That Inspire Change</h2>
+            <p>
+                Explore SCDF activities, community stories, awareness
+                campaigns and inspiring moments through multimedia.
+            </p>
+        </div>
+
+        {% if media_list %}
+
+            <div class="media-card-grid">
+
+                {% for media in media_list %}
+
+                    <article class="media-card media-dynamic-card">
+
+                        <div class="media-player">
+
+                            {% if media.media_type == "youtube" %}
+
+                                {% if media.youtube_embed_url %}
+                                    <iframe
+                                        src="{{ media.youtube_embed_url }}"
+                                        title="{{ media.title }}"
+                                        loading="lazy"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                        referrerpolicy="strict-origin-when-cross-origin"
+                                        allowfullscreen>
+                                    </iframe>
+                                {% else %}
+                                    <div class="media-unavailable">
+                                        YouTube video link is invalid.
+                                    </div>
+                                {% endif %}
+
+                            {% elif media.media_type == "video" %}
+
+                                {% if media.media_file %}
+
+                                    <video
+                                        controls
+                                        preload="metadata"
+                                        {% if media.thumbnail %}
+                                            poster="{{ media.thumbnail.url }}"
+                                        {% endif %}
+                                    >
+                                        <source src="{{ media.media_file.url }}">
+                                        Your browser does not support video playback.
+                                    </video>
+
+                                {% else %}
+                                    <div class="media-unavailable">
+                                        Video is not available.
+                                    </div>
+                                {% endif %}
+
+                            {% elif media.media_type == "audio" %}
+
+                                {% if media.media_file %}
+
+                                    <div class="media-audio-player">
+                                        <span class="media-audio-icon"
+                                              aria-hidden="true">&#127911;</span>
+
+                                        <audio controls preload="metadata">
+                                            <source src="{{ media.media_file.url }}">
+                                            Your browser does not support audio playback.
+                                        </audio>
+                                    </div>
+
+                                {% else %}
+                                    <div class="media-unavailable">
+                                        Audio is not available.
+                                    </div>
+                                {% endif %}
+
+                            {% endif %}
+
+                        </div>
+
+                        <div class="media-card-content">
+
+                            <span class="media-status">
+                                {% if media.media_type == "youtube" %}
+                                    YouTube
+                                {% elif media.media_type == "video" %}
+                                    Video
+                                {% elif media.media_type == "audio" %}
+                                    Audio
+                                {% endif %}
+                            </span>
+
+                            <h3>{{ media.title }}</h3>
+
+                            {% if media.description %}
+                                <p>{{ media.description }}</p>
+                            {% endif %}
+
+                        </div>
+
+                    </article>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div class="media-featured">
+
+                <div class="media-featured-content">
+                    <span class="media-label">FEATURED MEDIA</span>
+
+                    <h3>Our Stories, Our Impact</h3>
+
+                    <p>
+                        Videos and stories highlighting community development,
+                        humanitarian support and positive change.
+                    </p>
+
+                    <span class="media-coming-soon">
+                        Videos coming soon
+                    </span>
+                </div>
+
+                <div class="media-video-placeholder">
+                    <span class="media-play-icon" aria-hidden="true">
+                        &#9658;
+                    </span>
+                    <span>SCDF Media</span>
+                </div>
+
+            </div>
+
+            <div class="media-card-grid">
+
+                <article class="media-card">
+                    <div class="media-card-icon" aria-hidden="true">
+                        &#127916;
+                    </div>
+                    <h3>Video Gallery</h3>
+                    <p>
+                        Watch highlights from SCDF programs and community activities.
+                    </p>
+                    <span class="media-status">Coming soon</span>
+                </article>
+
+                <article class="media-card">
+                    <div class="media-card-icon" aria-hidden="true">
+                        &#127911;
+                    </div>
+                    <h3>Audio Stories</h3>
+                    <p>
+                        Listen to awareness messages, interviews and community stories.
+                    </p>
+                    <span class="media-status">Coming soon</span>
+                </article>
+
+                <article class="media-card">
+                    <div class="media-card-icon" aria-hidden="true">
+                        &#9654;
+                    </div>
+                    <h3>Awareness & Events</h3>
+                    <p>
+                        Discover educational and awareness content from SCDF.
+                    </p>
+                    <span class="media-status">Coming soon</span>
+                </article>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+</section>
 
     <!-- Training Program Section -->
     <section class="training-section" id="training">
@@ -1024,7 +1255,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         function updateSummary(data) {
             summary.textContent =
-                "? " + Number(data.average_rating).toFixed(1) +
+                "\u2605 " + Number(data.average_rating).toFixed(1) +
                 " / 5 (" + data.total_ratings + " ratings)";
             paintStars(data.user_rating);
         }
