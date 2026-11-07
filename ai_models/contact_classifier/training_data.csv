@@ -1,0 +1,37 @@
+text,label
+"I want to join SCDF as a volunteer",volunteering
+"I would love to work as a volunteer",volunteering
+"আমি SCDF এর স্বেচ্ছাসেবক হতে চাই",volunteering
+"আমি আপনাদের সংগঠনে volunteer হিসেবে যোগ দিতে চাই",volunteering
+"Ami SCDF er volunteer hote chai",volunteering
+"Ami volunteer hisebe kaj korte interested",volunteering
+"Tell me about your ongoing projects",project_inquiry
+"I need information about your development projects",project_inquiry
+"আপনাদের চলমান প্রকল্প সম্পর্কে জানতে চাই",project_inquiry
+"SCDF এর প্রকল্পগুলো কী কী",project_inquiry
+"Ami apnader project somporke jante chai",project_inquiry
+"Apnader development project gula ki ki",project_inquiry
+"We want to establish a partnership with SCDF",partnership
+"Our organization wants to collaborate with you",partnership
+"আমরা আপনাদের সংগঠনের সাথে অংশীদার হতে চাই",partnership
+"আপনাদের সাথে যৌথভাবে কাজ করতে চাই",partnership
+"Amra SCDF er sathe partnership korte chai",partnership
+"Amader organization apnader sathe collaborate korte chai",partnership
+"I want details about your training programs",training_inquiry
+"When will your next training session start",training_inquiry
+"আপনাদের প্রশিক্ষণ কার্যক্রম সম্পর্কে জানতে চাই",training_inquiry
+"আমি একটি প্রশিক্ষণে অংশগ্রহণ করতে চাই",training_inquiry
+"Ami apnader training program e join korte chai",training_inquiry
+"Training er next batch kobe shuru hobe",training_inquiry
+"I want to submit a complaint about your service",complaint
+"I am unhappy with the service I received",complaint
+"আপনাদের একটি সেবার বিষয়ে আমার অভিযোগ আছে",complaint
+"আমি একটি সমস্যার অভিযোগ জানাতে চাই",complaint
+"Apnader service niye amar ekta complaint ache",complaint
+"Ami apnader service e khub unhappy",complaint
+"Hello how are you",other
+"Good morning everyone",other
+"হ্যালো কেমন আছেন",other
+"আপনাদের অফিস কোথায়",other
+"Hi apnara kemon achen",other
+"Dhonnobad apnader help er jonno",other

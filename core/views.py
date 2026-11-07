@@ -1,4 +1,4 @@
-﻿
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.paginator import Paginator
 from django.contrib.auth.forms import UserCreationForm
@@ -20,6 +20,7 @@ from uuid import uuid4
 import re
 
 from .models import Project, News, ContactMessage, Comment, Reaction, CommentReaction, EmailVerification, Rating, Media
+from .contact_ai import classify_contact_message
 
 
 def home(request):
@@ -47,6 +48,15 @@ def home(request):
             if value.strip()
         ][:10]
         if name and email and message:
+            prediction = classify_contact_message(message)
+
+            ai_category = (
+                prediction["category"] if prediction else "pending"
+            )
+            ai_confidence = (
+                prediction["confidence"] if prediction else None
+            )
+
             ContactMessage.objects.create(
                 name=name,
                 email=email,
@@ -57,6 +67,8 @@ def home(request):
                     "contact_method": contact_method,
                     "additional_text_fields": additional_fields,
                 },
+                ai_category=ai_category,
+                ai_confidence=ai_confidence,
             )
             return redirect("/?contact=success#contact")
 
@@ -566,4 +578,5 @@ def rate_post(request):
         "total_ratings": ratings.count(),
         "user_rating": rating.score,
     })
+
 

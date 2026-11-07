@@ -27,10 +27,33 @@ class NewsAdmin(admin.ModelAdmin):
 
 @admin.register(ContactMessage)
 class ContactMessageAdmin(admin.ModelAdmin):
-    list_display = ("name", "email", "phone", "created_at")
+    list_display = (
+        "name",
+        "email",
+        "phone",
+        "ai_category",
+        "corrected_category",
+        "ai_confidence",
+        "created_at",
+    )
+
     search_fields = ("name", "email", "phone", "message")
-    list_filter = ("created_at",)
-    readonly_fields = ("created_at",)
+
+    list_filter = (
+        "ai_category",
+        "corrected_category",
+        "created_at",
+    )
+
+    list_editable = ("corrected_category",)
+
+    readonly_fields = (
+        "ai_category",
+        "ai_confidence",
+        "created_at",
+    )
+
+    ordering = ("-created_at",)
 
 
 @admin.register(Comment)

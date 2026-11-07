@@ -46,6 +46,31 @@ class ContactMessage(models.Model):
     phone = models.CharField(max_length=20, blank=True)
     message = models.TextField()
     extra_fields = models.JSONField(default=dict, blank=True)
+    CATEGORY_CHOICES = [
+        ("pending", "Pending"),
+        ("volunteering", "Volunteering"),
+        ("project_inquiry", "Project Inquiry"),
+        ("partnership", "Partnership"),
+        ("training_inquiry", "Training Inquiry"),
+        ("complaint", "Complaint"),
+        ("other", "Other / Unclear"),
+    ]
+
+    ai_category = models.CharField(
+        max_length=30,
+        choices=CATEGORY_CHOICES,
+        default="pending",
+    )
+    corrected_category = models.CharField(
+        max_length=30,
+        choices=CATEGORY_CHOICES,
+        blank=True,
+        default="",
+    )
+    ai_confidence = models.FloatField(
+        null=True,
+        blank=True,
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
