@@ -2601,3 +2601,29 @@ header nav ul li.auth-nav {
         padding: 20px;
     }
 }
+
+/* Google Maps - Requirement 10 */
+.contact-map {
+    width: 100%;
+    max-width: 1200px;
+    height: 380px;
+    margin: 35px auto 0;
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.10);
+}
+
+.contact-map iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+@media (max-width: 768px) {
+    .contact-map {
+        height: 280px;
+        margin-top: 25px;
+    }
+}
+
