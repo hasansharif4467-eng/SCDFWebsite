@@ -1,0 +1,33 @@
+{
+  "name": "scdfwebsite",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:webpack": "webpack --config webpack.config.js",
+    "build:gulp": "gulp copyTestSource",
+    "build:grunt": "grunt",
+    "build:all": "npm run build:webpack && npm run build:gulp && npm run build:grunt"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hasansharif4467-eng/SCDFWebsite.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/hasansharif4467-eng/SCDFWebsite/issues"
+  },
+  "homepage": "https://github.com/hasansharif4467-eng/SCDFWebsite#readme",
+  "devDependencies": {
+    "grunt": "^1.6.3",
+    "grunt-cli": "^1.5.0",
+    "gulp": "^5.0.1",
+    "gulp-cli": "^3.1.0",
+    "webpack": "^5.112.2",
+    "webpack-cli": "^7.3.1"
+  }
+}

@@ -15,7 +15,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.urls import reverse
 from django.utils import timezone
-from datetime import timedelta
+from datetime import date, timedelta
 from uuid import uuid4
 import re
 
@@ -25,20 +25,31 @@ from .contact_ai import classify_contact_message
 
 def home(request):
     projects_page = Paginator(
-        Project.objects.all().order_by("-created_at"), 3
+        Project.objects.all().order_by("-created_at"), 1
     ).get_page(request.GET.get("projects_page"))
     media_list = Media.objects.filter(is_active=True).order_by("-published_at")
 
     news_page = Paginator(
-        News.objects.all().order_by("-published_at"), 3
+        News.objects.all().order_by("-published_at"), 1
     ).get_page(request.GET.get("news_page"))
 
     success = False
+    date_error = ""
 
     if request.method == "POST":
         name = request.POST.get("name", "").strip()
         email = request.POST.get("email", "").strip()
         phone = request.POST.get("phone", "").strip()
+        preferred_date = request.POST.get("preferred_date", "").strip() or None
+        if preferred_date:
+            try:
+                preferred_date = date.fromisoformat(preferred_date)
+                if preferred_date < date.today():
+                    date_error = "Please select today or a future date."
+            except ValueError:
+                date_error = "Please enter a valid preferred date."
+                preferred_date = None
+
         message = request.POST.get("message", "").strip()
         subject = request.POST.get("subject", "").strip()
         contact_method = request.POST.get("contact_method", "").strip()
@@ -47,7 +58,7 @@ def home(request):
             for value in request.POST.getlist("extra_text_fields[]")
             if value.strip()
         ][:10]
-        if name and email and message:
+        if name and email and message and not date_error:
             prediction = classify_contact_message(message)
 
             ai_category = (
@@ -61,6 +72,7 @@ def home(request):
                 name=name,
                 email=email,
                 phone=phone,
+                preferred_date=preferred_date,
                 message=message,
                 extra_fields={
                     "subject": subject,
@@ -82,6 +94,7 @@ def home(request):
         "news_page": news_page,
         "media_list": media_list,
         "contact_success": success,
+        "contact_date_error": date_error,
     }
     return render(request, "core/index.html", context)
 
@@ -415,7 +428,6 @@ def react_to_post(request):
         "user_reaction": user_reaction,
     })
 
-@login_required
 @require_GET
 def load_reactions(request):
     post_type = request.GET.get("post_type", "").strip()
@@ -437,9 +449,11 @@ def load_reactions(request):
     post = get_object_or_404(model, pk=int(post_id))
     reactions = Reaction.objects.filter(**{post_type: post})
 
-    own_reaction = reactions.filter(user=request.user).values_list(
-        "reaction", flat=True
-    ).first()
+    own_reaction = None
+    if request.user.is_authenticated:
+        own_reaction = reactions.filter(user=request.user).values_list(
+            "reaction", flat=True
+        ).first()
 
     return JsonResponse({
         "success": True,
@@ -578,5 +592,3 @@ def rate_post(request):
         "total_ratings": ratings.count(),
         "user_rating": rating.score,
     })
-
-

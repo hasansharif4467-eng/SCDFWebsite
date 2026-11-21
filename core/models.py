@@ -3,6 +3,60 @@ import re
 from django.db import models
 from django.conf import settings
 
+from django.core.exceptions import ValidationError
+from pathlib import Path
+
+
+def validate_file_size(file, max_size_mb):
+    if file and file.size > max_size_mb * 1024 * 1024:
+        raise ValidationError(
+            f"File size cannot exceed {max_size_mb} MB."
+        )
+
+
+def validate_image_file(file):
+    if not file:
+        return
+
+    allowed_extensions = {".jpg", ".jpeg", ".png", ".webp"}
+    extension = Path(file.name).suffix.lower()
+
+    if extension not in allowed_extensions:
+        raise ValidationError(
+            "Only JPG, JPEG, PNG and WEBP images are allowed."
+        )
+
+    validate_file_size(file, 5)
+
+
+def validate_video_file(file):
+    if not file:
+        return
+
+    allowed_extensions = {".mp4", ".webm", ".mov"}
+    extension = Path(file.name).suffix.lower()
+
+    if extension not in allowed_extensions:
+        raise ValidationError(
+            "Only MP4, WEBM and MOV videos are allowed."
+        )
+
+    validate_file_size(file, 50)
+
+
+def validate_audio_file(file):
+    if not file:
+        return
+
+    allowed_extensions = {".mp3", ".wav", ".ogg"}
+    extension = Path(file.name).suffix.lower()
+
+    if extension not in allowed_extensions:
+        raise ValidationError(
+            "Only MP3, WAV and OGG audio files are allowed."
+        )
+
+    validate_file_size(file, 15)
 
 class EmailVerification(models.Model):
     user = models.ForeignKey(
@@ -23,7 +77,7 @@ class Project(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField()
     location = models.CharField(max_length=200, blank=True)
-    image = models.ImageField(upload_to="projects/", blank=True, null=True)
+    image = models.ImageField(upload_to="projects/", blank=True, null=True, validators=[validate_image_file])
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -33,7 +87,7 @@ class Project(models.Model):
 class News(models.Model):
     title = models.CharField(max_length=200)
     content = models.TextField()
-    image = models.ImageField(upload_to="news/", blank=True, null=True)
+    image = models.ImageField(upload_to="news/", blank=True, null=True, validators=[validate_image_file])
     published_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -44,6 +98,7 @@ class ContactMessage(models.Model):
     name = models.CharField(max_length=100)
     email = models.EmailField()
     phone = models.CharField(max_length=20, blank=True)
+    preferred_date = models.DateField(null=True, blank=True)
     message = models.TextField()
     extra_fields = models.JSONField(default=dict, blank=True)
     CATEGORY_CHOICES = [
@@ -235,11 +290,13 @@ class Media(models.Model):
     YOUTUBE = "youtube"
     VIDEO = "video"
     AUDIO = "audio"
+    IMAGE = "image"
 
     MEDIA_TYPES = [
         (YOUTUBE, "YouTube"),
         (VIDEO, "Video"),
         (AUDIO, "Audio"),
+        (IMAGE, "Image"),
     ]
 
     title = models.CharField(max_length=200)
@@ -259,12 +316,24 @@ class Media(models.Model):
         upload_to="media/thumbnails/",
         blank=True,
         null=True,
+        validators=[validate_image_file],
     )
     published_at = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
 
     class Meta:
         ordering = ["-published_at"]
+
+    def clean(self):
+        super().clean()
+
+        if self.media_file:
+            if self.media_type == self.VIDEO:
+                validate_video_file(self.media_file)
+            elif self.media_type == self.AUDIO:
+                validate_audio_file(self.media_file)
+            elif self.media_type == self.IMAGE:
+                validate_image_file(self.media_file)
 
     @property
     def youtube_embed_url(self):

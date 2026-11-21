@@ -4,3 +4,12 @@ venv/
 .venv/
 .env
 db.sqlite3
+
+# Node.js dependencies
+node_modules/
+
+# Generated build output
+tools/build-output/
+
+# Sass compiler and temporary verification output
+tools/sass/

@@ -1,0 +1,22 @@
+// SCDF Reusable Layout Mixins
+
+@mixin flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@mixin flex-between {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+@mixin flex-column {
+    display: flex;
+    flex-direction: column;
+}
+
+@mixin smooth-transition($duration: 0.3s) {
+    transition: all $duration ease;
+}

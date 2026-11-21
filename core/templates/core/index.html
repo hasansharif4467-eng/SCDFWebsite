@@ -1,4 +1,4 @@
-﻿
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,6 +8,11 @@
 
     {% load static %}
     <link rel="stylesheet" href="{% static 'core/style.css' %}">
+
+    <!-- GSAP Animation Library - Requirement 15 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.14.2/gsap.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.14.2/ScrollTrigger.min.js" defer></script>
+    <script src="{% static 'core/gsap-animations.js' %}" defer></script>
 </head>
 <body>
 
@@ -49,25 +54,66 @@
 
     <!-- Hero Section -->
     <section class="hero">
-        <div class="hero-content">
-            <p class="hero-subtitle">WELCOME TO SCDF</p>
+        <div class="hero-inner">
+            <div class="hero-content">
+                <p class="hero-subtitle">WELCOME TO SCDF</p>
 
-            <h1>Building a Better Future Together</h1>
+                <h1>Building a Better Future Together</h1>
 
-            <p class="hero-description">
-                Southern Conxs Bazar Development Forum works to improve
-                education, healthcare, skills development and sustainable
-                livelihoods for our communities.
-            </p>
+                <p class="hero-description">
+                    Southern Conxs Bazar Development Forum works to improve
+                    education, healthcare, skills development and sustainable
+                    livelihoods for our communities.
+                </p>
 
-            <div class="hero-buttons">
-                <a href="#about" class="btn btn-primary">Discover More</a>
-                <a href="#programs" class="btn btn-secondary">Our Programs</a>
+                <div class="hero-buttons">
+                    <a href="#about" class="btn btn-primary">Discover More</a>
+                    <a href="#programs" class="btn btn-secondary">Our Programs</a>
+                </div>
+
+                <div class="hero-trust-line">
+                    <span class="hero-trust-dot"></span>
+                    Empowering communities. Creating lasting impact.
+                </div>
+            </div>
+
+            <div class="hero-visual" aria-label="SCDF community development initiatives">
+                <div class="hero-visual-glow"></div>
+                <div class="hero-orbit hero-orbit-one"></div>
+                <div class="hero-orbit hero-orbit-two"></div>
+
+                <div class="hero-impact-card">
+                    <div class="hero-impact-top">
+                        <span class="hero-impact-mark">SCDF</span>
+                        <span class="hero-impact-label">OUR MISSION</span>
+                    </div>
+                    <div class="hero-impact-symbol" aria-hidden="true">✦</div>
+                    <h2>Stronger Communities,<br>Brighter Futures.</h2>
+                    <p>Working together for meaningful and sustainable change.</p>
+                    <div class="hero-impact-footer">
+                        <span></span>
+                        <span>COMMUNITY FIRST</span>
+                    </div>
+                </div>
+
+                <div class="hero-feature-card hero-feature-education">
+                    <span class="hero-feature-icon" aria-hidden="true">✎</span>
+                    <span>Education</span>
+                </div>
+
+                <div class="hero-feature-card hero-feature-health">
+                    <span class="hero-feature-icon" aria-hidden="true">✚</span>
+                    <span>Healthcare</span>
+                </div>
+
+                <div class="hero-feature-card hero-feature-skills">
+                    <span class="hero-feature-icon" aria-hidden="true">↗</span>
+                    <span>Skills Development</span>
+                </div>
             </div>
         </div>
     </section>
-
-    <!-- About SCDF Section -->
+<!-- About SCDF Section -->
     <section class="about-section" id="about">
         <div class="about-container">
 
@@ -497,6 +543,20 @@
                                     </div>
                                 {% endif %}
 
+                            {% elif media.media_type == "image" %}
+
+                                {% if media.media_file %}
+                                    <img
+                                        src="{{ media.media_file.url }}"
+                                        alt="{{ media.title }}"
+                                        loading="lazy"
+                                    >
+                                {% else %}
+                                    <div class="media-unavailable">
+                                        Image is not available.
+                                    </div>
+                                {% endif %}
+
                             {% endif %}
 
                         </div>
@@ -510,6 +570,8 @@
                                     Video
                                 {% elif media.media_type == "audio" %}
                                     Audio
+                                {% elif media.media_type == "image" %}
+                                    Image
                                 {% endif %}
                             </span>
 
@@ -771,6 +833,10 @@
 
                 <h3>Send Us a Message</h3>
 
+                {% if contact_date_error %}
+                    <p class="form-error" role="alert">{{ contact_date_error }}</p>
+                {% endif %}
+
                 <label for="contact-name">Name</label>
                 <input
                     type="text"
@@ -800,7 +866,15 @@
                     autocomplete="tel"
                 >
 
-                                <label for="contact-subject">Subject</label>
+                <label for="contact-preferred-date">Preferred Date (Optional)</label>
+                <input
+                    type="date"
+                    id="contact-preferred-date"
+                    name="preferred_date"
+                    min="{% now 'Y-m-d' %}"
+                >
+
+                <label for="contact-subject">Subject</label>
                 <select id="contact-subject" name="subject" required>
                     <option value="">Select a subject</option>
                     <option value="general">General Inquiry</option>
@@ -1350,6 +1424,13 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 </script>
+
+
+    <!-- Floating Donate Button -->
+    <a href="#contact" class="floating-donate" aria-label="Donate to SCDF">
+        <span class="donate-icon" aria-hidden="true">&#9829;</span>
+        <span>Donate</span>
+    </a>
 
 </body>
 </html>
